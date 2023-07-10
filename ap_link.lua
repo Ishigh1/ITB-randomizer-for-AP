@@ -173,6 +173,8 @@ local function win()
 end
 
 local function ask_for_credentials()
+    modApi.events.onMainMenuEntered:unsubscribe(ask_for_credentials)
+
     local font_title = sdlext.font("fonts/JustinFont12Bold.ttf", 16)
     local text_setttings_title = deco.uifont.default.set
 

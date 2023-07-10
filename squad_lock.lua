@@ -74,7 +74,7 @@ local function lock_squads(current_page)
     module.ui = {}
     
     for i = 0, 7, 1 do
-        --add_lock(current_page, i)
+        add_lock(current_page, i)
     end
 end
 
