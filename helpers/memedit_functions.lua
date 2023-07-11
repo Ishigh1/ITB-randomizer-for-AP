@@ -18,7 +18,9 @@ memedit_functions.tracking.board = {}
 
 local function reset_board_tracking()
     memedit_functions.tracking.board = {}
+end
 
+local function make_tracking()
     for tile_index, tile in ipairs(Board) do
         local tracking_content = {}
         tracking_content.health = Board:GetHealth(tile)
@@ -30,17 +32,21 @@ local function reset_board_tracking()
 end
 
 local function register_game_changes()
+    if memedit_functions.tracking.board == {} then
+        make_tracking()
+    end
+
     memedit.current_action = next_action
-    next_action = memedit:require().board.getVekActions()
+    next_action = memedit:require().board.getAttackOrder()
     if next_action ~= memedit.current_action then
         memedit_functions.events.on_vek_action_change:dispatch(next_action)
     end
 
     local new_overload = Game:GetResist()
-    if new_overload ~= memedit_functions.last_overload then
-        memedit_functions.events.on_overload_change:dispatch(new_overload - memedit_functions.last_overload)
+    if new_overload ~= memedit_functions.tracking.last_overload then
+        memedit_functions.events.on_overload_change:dispatch(new_overload - memedit_functions.tracking.last_overload)
     end
-    memedit_functions.last_overload = new_overload
+    memedit_functions.tracking.last_overload = new_overload
 
     for point, old_content in pairs(memedit_functions.tracking.board) do
         if Board:IsBuilding(point) and Board:GetHealth(point) ~= old_content.health then
