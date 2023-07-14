@@ -16,12 +16,23 @@ local function save_squad_selection()
 end
 
 function module.edit_squads(mod, slot_data)
+	if modApi.squad_text[1] == "squad1" then
+		return
+	end
+
 	modApi.squadIndices = {}
 	modApi.mod_squads_by_id = {}
 	modApi.currentMod = mod
+	local old_squads = modApi.mod_squads
+	local old_text = modApi.squad_text
+	local old_icon = modApi.squad_icon
+	
+	modApi.mod_squads = {}
+	modApi.squad_text = {}
+	modApi.squad_icon = {}
 
 	for index = 1, modApi.constants.MAX_SQUADS do
-		local vanilla_squad = modApi.mod_squads[index]
+		local vanilla_squad = old_squads[index]
 		local squad_name = vanilla_squad[1]
 		local squad
 		if slot_data == nil or slot_data[squad_name] == nil then
@@ -36,8 +47,8 @@ function module.edit_squads(mod, slot_data)
 		modApi:addSquad(
 			{squad_name, squad[1], squad[2], squad[3], id = "squad" .. index}, 
 			"squad" .. index, 
-			modApi.squad_text[index * 2], 
-			modApi.squad_icon[index])
+			old_text[index * 2], 
+			old_icon[index])
 
 		modApi.squadIndices[index] = #modApi.mod_squads
 	end

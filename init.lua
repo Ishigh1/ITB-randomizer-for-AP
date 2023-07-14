@@ -2,7 +2,7 @@ local function metadata(self)
 end
 
 local function init(self, options)
-	require(self.scriptPath .. "helpers/memedit_functions")
+	require(self.scriptPath .. "helpers/randomizer_helper")
 	require(self.scriptPath .. "helpers/GameEvents")
 
 	self.run_post_load = {}
@@ -20,7 +20,7 @@ local function init(self, options)
 		self.run_post_mission = nil
 	end)
 
-	self.ap_link = require(self.scriptPath .. "ap_link")
+	self.ap_link = require(self.scriptPath .. "ap/ap_link")
 	require(self.scriptPath .. "unimplemented_units")
 
 	local achievements = require(self.scriptPath .. "achievements/global")

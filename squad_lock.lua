@@ -70,11 +70,13 @@ local function destroy_ui()
 end
 
 local function lock_squads(current_page)
-    destroy_ui()
-    module.ui = {}
-    
-    for i = 0, 7, 1 do
-        add_lock(current_page, i)
+    if Game == nil then -- Also happens when the inventory has pages
+        destroy_ui()
+        module.ui = {}
+
+        for i = 0, 7, 1 do
+            add_lock(current_page, i)
+        end
     end
 end
 

@@ -83,7 +83,7 @@ function module.initialize_achievement_3(achievement, mod)
     achievement.objective = 4
 
     modapiext.events.onPawnIsShielded:subscribe(notice_pawn_shield)
-    memedit_functions.events.on_tile_shield:subscribe(count_shield)
+    randomizer_helper.events.on_tile_shield:subscribe(count_shield)
     modApi.events.onMissionStart:subscribe(reset_shield)
 end
 

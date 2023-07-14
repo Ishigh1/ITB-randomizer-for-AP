@@ -74,7 +74,7 @@ function module.initialize_achievement_1(achievement, mod)
     achievement.objective = 5
 
     modapiext.events.onSkillBuild:subscribe(register_attack)
-    memedit_functions.events.on_vek_action_change:subscribe(handle_tentacles)
+    randomizer_helper.events.on_vek_action_change:subscribe(handle_tentacles)
     modApi.events.onMissionStart:subscribe(reset_armor)
 
     local randomizer_mod = mod_loader.mods["randomizer"]
@@ -92,7 +92,7 @@ end
 
 local function check_team_kill(mission, pawn)
     if module.achievement2:is_active() and pawn:IsEnemy() and
-        (memedit_functions.events.current_action == ATTACK_ORDER_TENTACLES or memedit_functions.events.current_action ==
+        (randomizer_helper.events.current_action == ATTACK_ORDER_TENTACLES or randomizer_helper.events.current_action ==
             ATTACK_ORDER_IDLE) then
         module.achievement2:addProgress(1)
     end

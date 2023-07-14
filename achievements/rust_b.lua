@@ -39,7 +39,7 @@ end
 function module.initialize_achievement_2(achievement, mod)
     achievement.objective = 12
 
-    memedit_functions.events.on_tile_fire:subscribe(count_fire)
+    randomizer_helper.events.on_tile_fire:subscribe(count_fire)
     modApi.events.onMissionStart:subscribe(reset_fire)
 end
 

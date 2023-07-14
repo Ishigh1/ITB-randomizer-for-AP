@@ -13,7 +13,7 @@ end
 function module.initialize_achievement_1(achievement, mod)
     achievement.objective = 2
 
-    memedit_functions.events.on_overload_change:subscribe(register_overpower)
+    randomizer_helper.events.on_overload_change:subscribe(register_overpower)
 end
 
 -- ACHIEVEMENT 2
@@ -21,7 +21,7 @@ end
 -- Code : See 12 damages in ATTACK_ORDER_LIGHTNING 
 
 local function check_smoke(mission, pawn, damage)
-    if module.achievement2:is_active() and memedit_functions.events.current_action == ATTACK_ORDER_LIGHTNING then
+    if module.achievement2:is_active() and randomizer_helper.events.current_action == ATTACK_ORDER_LIGHTNING then
         module.achievement2:addProgress(damage)
     end
 end
@@ -70,7 +70,7 @@ end
 
 function module.initialize_achievement_3(achievement, mod)
     achievement.objective = true
-    memedit_functions.events.on_building_damaged:subscribe(fail_perfect)
+    randomizer_helper.events.on_building_damaged:subscribe(fail_perfect)
     modapiext.events.onPawnDamaged:subscribe(check_perfect)
     modApi.events.onMissionStart:subscribe(reset_perfect)
     modApi.events.onMissionEnd:subscribe(validate_perfect)

@@ -25,7 +25,7 @@ end
 
 -- ACHIEVEMENT 2
 -- Text : Kill an enemy 5 or more tiles away with a Dash Punch with the Rift Walkers squad
--- Code : Kill an enemy while having moved 5+ tiles this action, doesn't have to be with Dash Punch
+-- Code : Kill an enemy while having moved 5+ tiles this action, next to it, doesn't have to be with Dash Punch
 
 local function save_position(mission, pawn, weapon_id, p1, p2)
     if module.achievement2:is_active() then
@@ -43,7 +43,8 @@ local function check_dash(mission, pawn)
         local unit_position = module.ramming.pos
         if math.abs(enemy_position.x - unit_position.x) + math.abs(enemy_position.y - unit_position.y) >= 5 then
             local new_position = Board:GetPawn(module.ramming.id):GetSpace()
-            if math.abs(new_position.x - unit_position.x) + math.abs(new_position.y - unit_position.y) >= 5 then
+            if math.abs(new_position.x - unit_position.x) + math.abs(new_position.y - unit_position.y) >= 4 and
+                math.abs(new_position.x - enemy_position.x) + math.abs(new_position.y - enemy_position.y) == 1 then
                 module.achievement2:addProgress(true)
             end
         end

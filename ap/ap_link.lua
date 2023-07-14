@@ -31,9 +31,10 @@ function module.handle_bonus(item_name)
         elseif item_name == "-1 Grid Power" then
             module.queue.power = module.queue.power - 1
             changed = true
-        elseif item_name == "New Mission" then -- Dummy item to not rewrite the logic
+        elseif item_name == "New Game" then -- Dummy item to not rewrite the logic
             module.queue.starting_defense = 0
             module.queue.starting_power = 0
+            module.queue.dying = false
             changed = true
         elseif item_name == "New Save" then -- Dummy item to not rewrite the logic
             module.queue = {}
@@ -42,16 +43,24 @@ function module.handle_bonus(item_name)
             module.queue.defense = 0
             module.queue.power = 0
             changed = true
+        elseif item_name == "DeathLink" then
+            if Game ~= nil then
+                module.queue.dying = true
+                changed = true
+            end
         end
     end
 
-    if module.in_mission then
+    if modApi:getGameState() == "Mission" then
+        if module.queue.dying then
+            Game:ModifyPowerGrid(-100)
+        end
+
         if module.queue.starting_defense ~= 0 or module.queue.defense ~= 0 then
-            
             local resist = Game:GetResist()
             resist = resist + module.queue.starting_defense + module.queue.defense
             Game:SetResist(resist)
-            memedit_functions.tracking.last_overload = resist
+            randomizer_helper.tracking.last_overload = resist
 
             module.queue.starting_defense = 0
             module.queue.defense = 0
@@ -100,12 +109,19 @@ local function on_room_info()
     local slot = module.slot
     local password = module.password
     local items_handling = tonumber("111", 2)
-    module.AP:ConnectSlot(slot, password, items_handling, {"Lua-APClientPP"}, {0, 4, 1})
+    local tags = {"Lua-APClientPP"}
+    if module.deathlink then
+        table.insert(tags, "DeathLink")
+    end
+    module.AP:ConnectSlot(slot, password, items_handling, tags, {0, 4, 1})
 end
 
 local function on_slot_connected(slot_data)
 	local squad_randomizer = require(module.mod.scriptPath .. "squad_randomizer")
-	squad_randomizer.edit_squads(module.mod, slot_data)
+    function module.randomize_squad()
+        squad_randomizer.edit_squads(module.mod, slot_data)
+    end
+    module.randomize_squad()
 
     module.ui:detach()
     module.ui = nil
@@ -128,6 +144,39 @@ local function on_location_checked(locations)
     end
 end
 
+local function on_bounced(bounce)
+    if not module.deathlink then
+        return
+    end
+
+    for index, value in ipairs(bounce.tags) do
+        if value == "DeathLink" then
+            module.handle_bonus("DeathLink")
+            return
+        end
+    end
+end
+
+local function on_defeat(killer)
+    module.randomize_squad()
+
+    if module.deathlink and module.queue ~= nil and not module.queue.dying then
+        module.queue.dying = true
+        local cause
+        if killer == nil then
+            cause = module.slot .. " didn't feel like saving the world."
+        else
+            cause = module.slot .. "'s grid fell against a " .. killer .. "."
+        end
+        local data = {
+            time = module.AP:get_server_time(),
+            cause = cause,
+            source = module.slot
+        }
+        module.AP:Bounce(data, nil, nil, {"DeathLink"})
+    end
+end
+
 local function initialize_socket()
     local very_unique_id = ""
     local game_name = "Into the Breach"
@@ -139,6 +188,11 @@ local function initialize_socket()
     module.AP:set_slot_connected_handler(on_slot_connected)
     module.AP:set_items_received_handler(on_items_received)
     module.AP:set_location_checked_handler(on_location_checked)
+    module.AP:set_bounced_handler(on_bounced)
+
+    if module.deathlink then
+        randomizer_helper.events.on_game_lost:subscribe(on_defeat)
+    end
 end
 
 local function keep_alive()
@@ -172,112 +226,6 @@ local function win()
     module.frame = 0
 end
 
-local function ask_for_credentials()
-    modApi.events.onMainMenuEntered:unsubscribe(ask_for_credentials)
-
-    local font_title = sdlext.font("fonts/JustinFont12Bold.ttf", 16)
-    local text_setttings_title = deco.uifont.default.set
-
-    local server = UiInputField()
-    local slot = UiInputField()
-    local password = UiInputField()
-    local button = Ui()
-
-    local root = Ui()
-        :width(0.5)
-        :height(0.5)
-        :posCentered()
-        :decorate{DecoSolid(deco.colors.framebg) }
-        :beginUi(server)
-            :height(0.2)
-            :width(1)
-            :pos(0, 0.025)
-            :format(function(self) self:setGroupOwner(self.parent) end)
-            :settooltip("Server adress", nil, true)
-            :decorate{
-                DecoButton(),
-                DecoInputField{
-                    font = font_title,
-                    textset = text_setttings_title,
-                    alignH = "center",
-                    alignV = "center",
-                }
-            }
-        :endUi()
-        :beginUi(slot)
-            :height(0.2)
-            :width(1)
-            :pos(0, 0.275)
-            :format(function(self) self:setGroupOwner(self.parent) end)
-            :settooltip("Slot name", nil, true)
-            :decorate{
-                DecoButton(),
-                DecoInputField{
-                    font = font_title,
-                    textset = text_setttings_title,
-                    alignH = "center",
-                    alignV = "center",
-                }
-            }
-        :endUi()
-        :beginUi(password)
-            :height(0.2)
-            :width(1)
-            :pos(0, 0.525)
-            :format(function(self) self:setGroupOwner(self.parent) end)
-            :settooltip("Password", nil, true)
-            :decorate{
-                DecoButton(),
-                DecoInputField{
-                    font = font_title,
-                    textset = text_setttings_title,
-                    alignH = "center",
-                    alignV = "center",
-                }
-            }
-        :endUi()
-        :beginUi(button)
-            :height(0.2)
-            :width(1)
-            :pos(0, 0.775)
-			:decorate{ 
-                DecoButton(), 
-                DecoCAlignedText("Connect", font_title, text_setttings_title)
-            }
-        :endUi()
-        :addTo(sdlext.getUiRoot())
-        :bringToTop()
-
-    server.textfield = modApi:readProfileData("server") or "archipelago.gg:38281"
-    slot.textfield = modApi:readProfileData("slot") or "Player1"
-    button.onclicked = function(self, button)
-        if button == 1 then
-            module.server = server.textfield
-            module.slot = slot.textfield
-            module.password = password.textfield
-
-            modApi:writeProfileData("server", module.server)
-            modApi:writeProfileData("slot", module.slot)
-
-            root:detach()
-            module.initializing = false
-
-            local connection_font = sdlext.font("fonts/JustinFont12Bold.ttf", 25)
-
-            module.ui = Ui():height(0.5)
-            :width(0.5)
-            :posCentered()
-			:decorate{ 
-                DecoCAlignedText("Connecting...", font_title, text_setttings_title)
-            }
-            :addTo(sdlext.getUiRoot())
-            return true
-        end
-
-        return false
-    end
-end
-
 function module.init(mod)
     module.frame = 0
     module.queue = modApi:readProfileData("queued_items")
@@ -296,15 +244,24 @@ function module.init(mod)
 
     initialize_unlocked_content()
 
+	local ap_ui = require(mod.scriptPath .. "ap/ap_ui")(module)
     module.ap_dll = package.loadlib(mod.resourcePath .. "lib/lua-apclientpp.dll", "luaopen_apclientpp")()
     modApi.events.onGameVictory:subscribe(win)
-    modApi.events.onMainMenuEntered:subscribe(ask_for_credentials)
+    modApi.events.onMainMenuEntered:subscribe(ap_ui)
     modApi.events.onFrameDrawn:subscribe(keep_alive)
 end
 
 function module.complete_location(location_name)
     module.queued_locations[location_name] = true
     module.frame = 0
+end
+
+local old_get_text = GetText
+function GetText(id, r1, r2, r3)
+    if id == "Gameover_Timeline" then
+        on_defeat(randomizer_helper.tracking.last_attacker)
+    end
+    return old_get_text(id, r1, r2, r3)
 end
 
 return module
