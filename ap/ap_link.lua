@@ -271,8 +271,8 @@ local function keep_alive()
 end
 
 local function win()
-    if module.hint then
-        if GetDifficulty()
+    if module.hint then -- Waiting for item scouting to exist
+        --if GetDifficulty()
     else
         module.queued_locations["Victory"] = true
         module.profile_manager.set_data("victory", true)
