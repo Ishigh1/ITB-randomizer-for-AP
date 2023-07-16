@@ -56,31 +56,31 @@ end
 -- Code : ^
 
 local function fail_pacifist()
-    if module.achievement3:is_active() and modApi:readProfileData("Ach_Rust_A_3_failed_perfect") == nil then
-        module.achievement3.text = GetVanillaText("Ach_Detritus_B_2_Text") .. "\n" .. "Failed"
+    if module.achievement3:is_active() and (module.achievement3:get_flag("kills") or 0) >= 3 then
+        module.achievement3.text = GetVanillaText("Ach_Pinnacle_B_3_Text") .. "\n" .. "Failed"
     end
 end
 
 local function not_very_pacifist(mission, pawn)
     if module.achievement3:is_active() and pawn:isEnemy() then
-        local killed = (modApi:readProfileData("Ach_Pinnacle_B_3_kills") or 0) + 1
+        local killed = (module.achievement3:get_flag("kills") or 0) + 1
 
         if killed >= 3 then
             module.achievement3.text = GetVanillaText("Ach_Pinnacle_B_3_Text") .. "\n" .. "Failed"
         end
-        modApi:writeProfileData("Ach_Pinnacle_B_3_kills", killed)
+        module.achievement3:set_flag("kills", killed)
     end
 end
 
 local function become_pacifist()
-    if module.achievement3:is_active() and (modApi:readProfileData("Ach_Pinnacle_B_3_kills") or 0) < 3 then
+    if module.achievement3:is_active() and (module.achievement3:get_flag("kills") or 0) < 3 then
         module.achievement3:addProgress(true)
     end
 end
 
 local function reset_pacifist()
     if module.achievement3:is_active() then
-        modApi:writeProfileData("Ach_Pinnacle_B_3_kills", nil)
+        module.achievement3:set_flag("kills", nil)
         module.achievement3.text = GetVanillaText("Ach_Pinnacle_B_3_Text")
     end
 end
@@ -90,10 +90,6 @@ function module.initialize_achievement_3(achievement, mod)
     modapiext.events.onPawnKilled:subscribe(not_very_pacifist)
     modApi.events.onMissionEnd:subscribe(become_pacifist)
     modApi.events.onMissionStart:subscribe(reset_pacifist)
-
-    if (modApi:readProfileData("Ach_Pinnacle_B_3_kills") or 0) >= 3 then
-        achievement.text = GetVanillaText("Ach_Pinnacle_B_3_Text") .. "\n" .. "Failed"
-    end
 end
 
 return module

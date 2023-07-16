@@ -1,5 +1,7 @@
 local module = {}
 
+-- No need to care about the profile manager here since you shouldn't change profile in the middle of a mission
+
 local function reset_grid_appliance()
     modApi:writeProfileData("applied_grid", false)
 end

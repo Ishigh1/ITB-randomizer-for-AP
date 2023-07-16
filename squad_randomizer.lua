@@ -15,14 +15,14 @@ local function save_squad_selection()
 	end)
 end
 
-function module.edit_squads(mod, slot_data)
+function module.edit_squads(slot_data)
 	if modApi.squad_text[1] == "squad1" then
 		return
 	end
 
 	modApi.squadIndices = {}
 	modApi.mod_squads_by_id = {}
-	modApi.currentMod = mod
+	modApi.currentMod = "randomizer"
 	local old_squads = modApi.mod_squads
 	local old_text = modApi.squad_text
 	local old_icon = modApi.squad_icon
@@ -53,7 +53,6 @@ function module.edit_squads(mod, slot_data)
 		modApi.squadIndices[index] = #modApi.mod_squads
 	end
     save_squad_selection()
-	modApi.currentMod = mod
 end
 
 return module

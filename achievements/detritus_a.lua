@@ -40,13 +40,13 @@ end
 
 local function reset_speedrun()
     if module.achievement2:is_active() then
-        modApi:writeProfileData("Ach_Detritus_A_1_start", os.time())
+        module.achievement2:set_flag("start", os.time())
         module.achievement2:resetProgression()
     end
 end
 
 local function check_speedrun(island)
-    if module.achievement2:is_active() and (os.time() - modApi:readProfileData("Ach_Detritus_A_1_start") / 60 <= 30)  then
+    if module.achievement2:is_active() and (os.time() - module.achievement2:get_flag("start") / 60 <= 30)  then
         module.achievement2:addProgression(1)
     end
 end

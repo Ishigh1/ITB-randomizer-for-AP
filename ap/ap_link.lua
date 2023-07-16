@@ -5,11 +5,11 @@ local function reset_unlocked_content()
         ["Unlock Rift Walkers"] = 1,
         count = 1
     }
-    modApi:writeProfileData("unlocked_items", module.unlocked_items)
+    module.profile_manager.set_data("unlocked_items", module.unlocked_items)
 end
 
 local function initialize_unlocked_content()
-    module.unlocked_items = modApi:readProfileData("unlocked_items")
+    module.unlocked_items = module.profile_manager.get_data("unlocked_items")
     if module.unlocked_items == nil then
         reset_unlocked_content()
     end
@@ -83,7 +83,7 @@ function module.handle_bonus(item_name)
     end
 
     if (changed) then
-        modApi:writeProfileData("queued_items", module.queue)
+        module.profile_manager.set_data("queued_items", module.queue)
     end
 end
 
@@ -100,7 +100,7 @@ local function add_to_unlocked(item)
     end
     module.unlocked_items[item_name] = 1
     module.unlocked_items.count = module.unlocked_items.count + 1
-    modApi:writeProfileData("unlocked_items", module.unlocked_items)
+    module.profile_manager.set_data("unlocked_items", module.unlocked_items)
     module.handle_bonus(item_name)
     return true
 end
@@ -113,18 +113,63 @@ local function on_room_info()
     if module.deathlink then
         table.insert(tags, "DeathLink")
     end
+    if module.hint then
+        table.insert(tags, "TextOnly")
+    end
     module.AP:ConnectSlot(slot, password, items_handling, tags, {0, 4, 1})
 end
 
-local function on_slot_connected(slot_data)
-	local squad_randomizer = require(module.mod.scriptPath .. "squad_randomizer")
-    function module.randomize_squad()
-        squad_randomizer.edit_squads(module.mod, slot_data)
+local function make_profile()
+    local file = Directory.savedata():directory("profile_" .. Settings.last_profile):file("profile.lua")
+    if not file:exists() then
+        file:make_directories()
+        modApi:copyFile(module.mod.scriptPath .. "data/profile.lua", GetSavedataLocation() .. "profile_" .. Settings.last_profile .. "/profile.lua")
     end
-    module.randomize_squad()
+end
+
+local function on_slot_connected(slot_data)
+    local old_toast = modApi.toasts.add
+    if not module.hint then
+        function modApi.toasts.add() -- just disable the toast for achievements
+        end
+
+        local seed_name = module.AP:get_seed()
+        module.profile_manager = require(module.mod.scriptPath .. "profile_manager")(module, seed_name, module.slot)
+        module.mod.profile_manager = module.profile_manager
+
+        local squad_randomizer = require(module.mod.scriptPath .. "squad_randomizer")
+        function module.randomize_squad()
+            squad_randomizer.edit_squads(slot_data)
+        end
+        module.randomize_squad()
+
+        module.queue = module.profile_manager.get_data("queued_items")
+        if module.queue == nil then
+            module.handle_bonus("New Save")
+        end
+
+        if module.profile_manager.get_data("victory") then
+            win()
+        end
+
+        initialize_unlocked_content()
+
+        require(module.mod.scriptPath .. "squad_lock").initialize(module.mod)
+        require(module.mod.scriptPath .. "upgrades").initialize(module.mod)
+
+        modApi.achievements.canBeAdded = function()
+            return true
+        end
+        local achievements = require(module.mod.scriptPath .. "achievements/global")
+        achievements.initialize(module.mod)
+        achievements.add_achievements()
+    end
+    module.profile_initializing = false
 
     module.ui:detach()
     module.ui = nil
+    
+    modApi.toasts.add = old_toast
 end
 
 local function on_items_received(items)
@@ -158,7 +203,9 @@ local function on_bounced(bounce)
 end
 
 local function on_defeat(killer)
-    module.randomize_squad()
+    if not module.hint then
+        module.randomize_squad()
+    end
 
     if module.deathlink and module.queue ~= nil and not module.queue.dying then
         module.queue.dying = true
@@ -179,7 +226,10 @@ end
 
 local function initialize_socket()
     local very_unique_id = ""
-    local game_name = "Into the Breach"
+    local game_name
+    if not module.hint then
+        game_name = "Into the Breach"
+    end
     local server = module.server
 
     module.AP = module.ap_dll(very_unique_id, game_name, server)
@@ -203,7 +253,7 @@ local function keep_alive()
         else
             module.AP:poll()
 
-            if module.AP:get_state() == module.AP.State.SLOT_CONNECTED and module.frame % 60 == 0 then
+            if not module.profile_initializing and module.frame % 60 == 0 then
                 local locations = {}
                 for location_name, _ in pairs(module.queued_locations) do
                     if location_name == "Victory" then
@@ -221,30 +271,24 @@ local function keep_alive()
 end
 
 local function win()
-    module.queued_locations["Victory"] = true
-    modApi:writeProfileData("victory", true)
-    module.frame = 0
+    if module.hint then
+        if GetDifficulty()
+    else
+        module.queued_locations["Victory"] = true
+        module.profile_manager.set_data("victory", true)
+        module.frame = 0
+    end
 end
 
 function module.init(mod)
     module.frame = 0
-    module.queue = modApi:readProfileData("queued_items")
     module.queued_locations = {}
     module.in_mission = false
     module.initializing = true
+    module.profile_initializing = true
     module.mod = mod
 
-    if module.queue == nil then
-        module.handle_bonus("New Save")
-    end
-
-    if modApi:readProfileData("victory") then
-        win()
-    end
-
-    initialize_unlocked_content()
-
-	local ap_ui = require(mod.scriptPath .. "ap/ap_ui")(module)
+    local ap_ui = require(mod.scriptPath .. "ap/ap_ui")(module)
     module.ap_dll = package.loadlib(mod.resourcePath .. "lib/lua-apclientpp.dll", "luaopen_apclientpp")()
     modApi.events.onGameVictory:subscribe(win)
     modApi.events.onMainMenuEntered:subscribe(ap_ui)

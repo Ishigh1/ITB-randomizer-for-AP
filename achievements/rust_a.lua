@@ -44,7 +44,7 @@ end
 -- Code : ^
 
 local function fail_perfect()
-    if module.achievement3:is_active() and modApi:readProfileData("Ach_Rust_A_3_failed_perfect") == nil then
+    if module.achievement3:is_active() and module.achievement3:get_flag("failed_perfect") == nil then
         module.achievement3.text = GetVanillaText("Ach_Rust_A_3_Text") .. "\n" .. "Failed"
     end
 end
@@ -56,14 +56,14 @@ local function check_perfect(mission, pawn)
 end
 
 local function reset_perfect()
-    if module.achievement3:is_active() and modApi:readProfileData("Ach_Rust_A_3_failed_perfect") == true then
+    if module.achievement3:is_active() and module.achievement3:get_flag("failed_perfect") == true then
         module.achievement3.text = GetVanillaText("Ach_Rust_A_3_Text")
-        modApi:writeProfileData("Ach_Rust_A_3_failed_perfect", nil)
+        module.achievement3:set_flag("failed_perfect", nil)
     end
 end
 
 local function validate_perfect()
-    if module.achievement3:is_active() and modApi:readProfileData("Ach_Rust_A_3_failed_perfect") == nil then
+    if module.achievement3:is_active() and module.achievement3:get_flag("failed_perfect") == nil then
         module.achievement3:addProgress(true)
     end
 end
@@ -74,10 +74,6 @@ function module.initialize_achievement_3(achievement, mod)
     modapiext.events.onPawnDamaged:subscribe(check_perfect)
     modApi.events.onMissionStart:subscribe(reset_perfect)
     modApi.events.onMissionEnd:subscribe(validate_perfect)
-
-    if modApi:readProfileData("Ach_Rust_A_3_failed_perfect") == true then
-        achievement.text = GetVanillaText("Ach_Detritus_B_2_Text") .. "\n" .. "Failed"
-    end
 end
 
 return module

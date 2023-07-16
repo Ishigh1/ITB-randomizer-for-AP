@@ -10,6 +10,7 @@ return function(ap_link)
         local password = UiInputField()
         local button = Ui()
         local deathlink = UiCheckbox()
+        local hint = UiCheckbox()
 
         local root = Ui()
             :width(0.5)
@@ -74,6 +75,16 @@ return function(ap_link)
                     DecoCAlignedText("Deathlink", font_title, text_setttings_title)
                 })
             :endUi()
+            --:beginUi(hint) -- Waiting for item scouting to exist
+            --    :height(0.15)
+            --    :width(0.45)
+            --    :pos(0.525, 0.625)
+            --    :decorate({
+            --        DecoButton(),
+            --        DecoCheckbox(),
+            --        DecoCAlignedText("Hint mode", font_title, text_setttings_title)
+            --    })
+            --:endUi()
             :beginUi(button)
                 :height(0.15)
                 :width(0.95)
@@ -94,6 +105,7 @@ return function(ap_link)
                 ap_link.slot = slot.textfield
                 ap_link.password = password.textfield
                 ap_link.deathlink = deathlink.checked
+                ap_link.hint = hint.checked
 
                 modApi:writeProfileData("server", ap_link.server)
                 modApi:writeProfileData("slot", ap_link.slot)

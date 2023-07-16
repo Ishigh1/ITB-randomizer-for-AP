@@ -34,20 +34,20 @@ end
 local function check_immortality(mission, pawn)
     if module.achievement2:is_active() and pawn:IsPlayer() then
         mortality()
-        modApi:writeProfileData("Ach_Detritus_B_2_failed_immortality", true)
+        module.achievement2:set_flag("failed_immortality", true)
     end
 end
 
 local function regain_immortality()
     if module.achievement2:is_active() then
         module.achievement2:resetProgress()
-        modApi:writeProfileData("Ach_Detritus_B_2_failed_immortality", nil)
+        module.achievement2:set_flag("Ach_Detritus_B_2_failed_immortality", nil)
         module.achievement2.text = GetVanillaText("Ach_Detritus_B_2_Text")
     end
 end
 
 local function gain_immortality(island)
-    if module.achievement2:is_active() and modApi:readProfileData("Ach_Detritus_B_2_failed_immortality") == nil then
+    if module.achievement2:is_active() and module.achievement2:get_flag("Ach_Detritus_B_2_failed_immortality") == nil then
         module.achievement2:addProgress(1)
     end
 end
@@ -58,10 +58,6 @@ function module.initialize_achievement_2(achievement, mod)
     modapiext.events.onPawnKilled:subscribe(check_immortality)
     modApi.events.onPostStartGame:subscribe(regain_immortality)
     modApi.events.onIslandLeft:subscribe(gain_immortality)
-
-    if modApi:readProfileData("Ach_Detritus_B_2_failed_immortality") == true then
-        achievement.text = GetVanillaText("Ach_Detritus_B_2_Text") .. "\n" .. GetVanillaText("Ach_Detritus_B_2_Failed")
-    end
 end
 
 -- ACHIEVEMENT 3

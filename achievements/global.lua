@@ -3,27 +3,19 @@ local module = {}
 function module.initialize(mod)
     module.ap_link = mod.ap_link
     module.mod = mod
+    module.profile_manager = mod.profile_manager
     module.path = mod.scriptPath .. "achievements/"
 end
 
-local function complete_achievement(achievement)
-    module.ap_link.complete_location(achievement.name)
-end
-
 local function initialize_achievement(achievement, team, id, name)
-    achievement.addReward = complete_achievement
     local achievement_module = require(module.path .. string.lower(team))
     achievement_module["initialize_achievement_" .. id](achievement, module.mod)
 
     modApi.achievements:add(achievement)
     achievement = modApi.achievements:get("randomizer", name)
-    function achievement:is_active()
-        return GAME ~= nil and not self:isComplete() and (
-            GAME.additionalSquadData.squad == team --When outside of battle
-            or GAME.additionalSquadData.squad == self.squad -- When in battle
-    )
-    end
+
     achievement_module["achievement" .. id] = achievement
+    module.profile_manager.register_achievement(achievement, team)
 end
 
 function module.add_achievements()
