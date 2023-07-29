@@ -84,8 +84,7 @@ end
 
 function module.initialize_achievement_3(achievement, mod)
     achievement.objective = true
-    modapiext.events.onSkillStart:subscribe(start_attack)
-    modapiext.events.onQueuedSkillStart:subscribe(start_attack)
+    randomizer_helper.events.on_attack:subscribe(start_attack)
     modapiext.events.onPawnDamaged:subscribe(register_damage)
 end
 

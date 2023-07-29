@@ -21,7 +21,7 @@ end
 function module.initialize_achievement_1(achievement, mod)
     achievement.objective = true
 
-    modapiext.events.onSkillStart:subscribe(check_pull)
+    randomizer_helper.events.on_attack:subscribe(check_pull)
     modapiext.events.onPawnKilled:subscribe(kill_pull)
 end
 

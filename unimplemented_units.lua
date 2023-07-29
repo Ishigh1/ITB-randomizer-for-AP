@@ -1,3 +1,4 @@
+
 TinyheadMech = {
 	Name = "Pitch Mech",
 	Class = "Prime",
@@ -61,7 +62,7 @@ NapalmMech2 = {
 	Massive = true
 }
 	
-AddPawn("NapalmMech") 
+AddPawn("NapalmMech2") 
 
 PlacerMech = 
 {

@@ -4,10 +4,11 @@ return function(ap_link, seed_name, slot)
         all_profiles = {}
     end
 
-    local current_profile = all_profiles[seed_name .. "|" .. slot]
+    local profile_path = seed_name .. "|" .. slot
+    local current_profile = all_profiles[profile_path]
     if current_profile == nil then
         current_profile = {}
-        all_profiles[seed_name] = current_profile
+        all_profiles[profile_path] = current_profile
         modApi:writeProfileData("randomizer_profiles", all_profiles)
     end
 
@@ -40,11 +41,17 @@ return function(ap_link, seed_name, slot)
     end
 
     function module.register_achievement(achievement, team)
-        function achievement:is_active()
-            return GAME ~= nil and not self:isComplete() and (
-                GAME.additionalSquadData.squad == team --When outside of battle
-                or GAME.additionalSquadData.squad == self.squad -- When in battle
-        )
+        if ap_link.custom then
+            function achievement:is_active()
+                return GAME ~= nil and not self:isComplete()
+            end
+        else
+            function achievement:is_active()
+                return GAME ~= nil and not self:isComplete() and (
+                    GAME.additionalSquadData.squad == team --When outside of battle
+                    or GAME.additionalSquadData.squad == self.squad -- When in battle
+            )
+            end
         end
 
         function achievement:get_data(name)

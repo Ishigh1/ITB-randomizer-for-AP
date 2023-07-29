@@ -9,6 +9,8 @@ randomizer_helper.events.on_tile_fire = Event()
 randomizer_helper.events.on_tile_shield = Event()
 randomizer_helper.events.on_game_lost = Event()
 
+randomizer_helper.events.on_attack = Event()
+
 -- Things might look weird because I have to take in account the fact that most hooks in-game happen one frame after attack order changes
 randomizer_helper.tracking.current_action = ATTACK_ORDER_IDLE
 local next_action = ATTACK_ORDER_IDLE
@@ -30,10 +32,6 @@ local function make_tracking()
 
         randomizer_helper.tracking.board[tile] = tracking_content
     end
-end
-
-local function register_attack(mission, pawn, weaponId, p1, p2)
-    randomizer_helper.tracking.last_attacker = pawn:GetMechName()
 end
 
 local function register_game_changes()
@@ -72,9 +70,18 @@ local function register_game_changes()
     end
 end
 
+local function register_attack(mission, pawn, weapon_id, p1, p2)
+    randomizer_helper.tracking.last_attacker = pawn:GetMechName()
+    randomizer_helper.events.on_attack:dispatch(mission, pawn, weapon_id, p1, p2)
+end
+
+
 modApi.events.onFrameDrawn:subscribe(register_game_changes)
 modApi.events.onMissionUpdate:subscribe(register_game_changes)
 modApi.events.onMissionStart:subscribe(reset_board_tracking)
 modApi.events.onPostLoadGame:subscribe(reset_board_tracking)
+
 modapiext.events.onSkillStart:subscribe(register_attack)
+modapiext.events.onFinalEffectStart:subscribe(register_attack)
 modapiext.events.onQueuedSkillStart:subscribe(register_attack)
+modapiext.events.onQueuedFinalEffectStart:subscribe(register_attack)

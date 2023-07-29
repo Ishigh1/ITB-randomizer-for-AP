@@ -2,24 +2,24 @@ local module = {}
 
 module.position_to_name = {
     [1] = {
-        [0] = "Unlock Random Squad",
-        [1] = "Unlock Custom Squad",
-        [2] = "Unlock Rift Walkers",
-        [3] = "Unlock Rusting Hulks",
-        [4] = "Unlock Zenith Guard",
-        [5] = "Unlock Blitzkrieg",
-        [6] = "Unlock Steel Judoka",
-        [7] = "Unlock Flame Behemoths",
+        [0] = "Random Squad",
+        [1] = "Custom Squad",
+        [2] = "Rift Walkers",
+        [3] = "Rusting Hulks",
+        [4] = "Zenith Guard",
+        [5] = "Blitzkrieg",
+        [6] = "Steel Judoka",
+        [7] = "Flame Behemoths",
     },
     [2] = {
-        [0] = "Unlock Frozen Titans",
-        [1] = "Unlock Hazardous Mechs",
-        [2] = "Unlock Bombermechs",
-        [3] = "Unlock Arachnophiles",
-        [4] = "Unlock Mist Eaters",
-        [5] = "Unlock Heat Sinkers",
-        [6] = "Unlock Catacltsm",
-        [7] = "Unlock Secret Squad",
+        [0] = "Frozen Titans",
+        [1] = "Hazardous Mechs",
+        [2] = "Bombermechs",
+        [3] = "Arachnophiles",
+        [4] = "Mist Eaters",
+        [5] = "Heat Sinkers",
+        [6] = "Cataclysm",
+        [7] = "Secret Squad",
     }
 }
 
@@ -28,10 +28,17 @@ local function add_lock(page, id)
         return
     end
     
-    local unlock_name = module.position_to_name[page][id]
-    if (module.ap_link.unlocked_items[unlock_name]) then
-        return
+    if module.ap_link.custom then
+        if page == 1 and id == 1 then
+            return
+        end
+    else
+        local unlock_name = module.position_to_name[page][id]
+        if module.ap_link.unlocked_items[unlock_name] then
+            return
+        end
     end
+    
     local x = (id % 2) * (635 + 315 - 455 - 50 + 20 + 5)
     local y =  math.floor(id / 2) * (69 + 20 + 20 - 10)
     local ui = Ui()
@@ -75,7 +82,7 @@ local function lock_squads(current_page)
         module.ui = {}
 
         for i = 0, 7, 1 do
-            add_lock(current_page, i)
+            --add_lock(current_page, i)
         end
     end
 end

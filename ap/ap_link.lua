@@ -2,7 +2,7 @@ local module = {}
 
 local function reset_unlocked_content()
     module.unlocked_items = {
-        ["Unlock Rift Walkers"] = 1,
+        ["Rift Walkers"] = 1,
         count = 1
     }
     module.profile_manager.set_data("unlocked_items", module.unlocked_items)
@@ -11,6 +11,7 @@ end
 local function initialize_unlocked_content()
     module.unlocked_items = module.profile_manager.get_data("unlocked_items")
     if module.unlocked_items == nil then
+        LOG("Creating unlocked items")
         reset_unlocked_content()
     end
 end
@@ -48,6 +49,9 @@ function module.handle_bonus(item_name)
                 module.queue.dying = true
                 changed = true
             end
+        else
+            modApi.squad_text[1] = "squad1 "
+            module.randomize_squad()
         end
     end
 
@@ -88,12 +92,20 @@ function module.handle_bonus(item_name)
 end
 
 local function add_to_unlocked(item)
+    LOG(item.index)
+    LOG(module.unlocked_items.count)
     if (item.index < module.unlocked_items.count) then
         return true
     end
 
     local item_name = module.AP:get_item_name(item.item)
     local previous_value = module.unlocked_items[item_name]
+
+    LOG("Received " .. item_name)
+    modApi.toasts:add({
+        title = "Item Received",
+        name = item_name
+    })
 
     if previous_value then
         module.unlocked_items[item_name] = previous_value + 1
@@ -123,11 +135,13 @@ local function make_profile()
     local file = Directory.savedata():directory("profile_" .. Settings.last_profile):file("profile.lua")
     if not file:exists() then
         file:make_directories()
-        modApi:copyFile(module.mod.scriptPath .. "data/profile.lua", GetSavedataLocation() .. "profile_" .. Settings.last_profile .. "/profile.lua")
+        modApi:copyFile(module.mod.scriptPath .. "data/profile.lua",
+            GetSavedataLocation() .. "profile_" .. Settings.last_profile .. "/profile.lua")
     end
 end
 
 local function on_slot_connected(slot_data)
+    LOG("Preparing profile...")
     local old_toast = modApi.toasts.add
     if not module.hint then
         function modApi.toasts.add() -- just disable the toast for achievements
@@ -137,22 +151,25 @@ local function on_slot_connected(slot_data)
         module.profile_manager = require(module.mod.scriptPath .. "profile_manager")(module, seed_name, module.slot)
         module.mod.profile_manager = module.profile_manager
 
-        local squad_randomizer = require(module.mod.scriptPath .. "squad_randomizer")
-        function module.randomize_squad()
-            squad_randomizer.edit_squads(slot_data)
-        end
-        module.randomize_squad()
+        module.custom = slot_data.custom == true
 
         module.queue = module.profile_manager.get_data("queued_items")
         if module.queue == nil then
             module.handle_bonus("New Save")
         end
 
+        initialize_unlocked_content()
+
         if module.profile_manager.get_data("victory") then
             win()
         end
 
-        initialize_unlocked_content()
+        local squad_randomizer = require(module.mod.scriptPath .. "squad_randomizer")
+        squad_randomizer.slot_data = slot_data.squads
+        squad_randomizer.ap_link = module
+        module.randomize_squad = squad_randomizer.edit_squads
+
+        module.randomize_squad()
 
         require(module.mod.scriptPath .. "squad_lock").initialize(module.mod)
         require(module.mod.scriptPath .. "upgrades").initialize(module.mod)
@@ -164,12 +181,12 @@ local function on_slot_connected(slot_data)
         achievements.initialize(module.mod)
         achievements.add_achievements()
     end
-    module.profile_initializing = false
-
     module.ui:detach()
     module.ui = nil
-    
+
     modApi.toasts.add = old_toast
+    module.profile_initializing = false
+    LOG("Finished initializing the randomizer")
 end
 
 local function on_items_received(items)
@@ -225,6 +242,8 @@ local function on_defeat(killer)
 end
 
 local function initialize_socket()
+    LOG("Initializing Socket")
+
     local very_unique_id = ""
     local game_name
     if not module.hint then
@@ -254,6 +273,8 @@ local function keep_alive()
             module.AP:poll()
 
             if not module.profile_initializing and module.frame % 60 == 0 then
+                module.randomize_squad()
+
                 local locations = {}
                 for location_name, _ in pairs(module.queued_locations) do
                     if location_name == "Victory" then
@@ -272,7 +293,7 @@ end
 
 local function win()
     if module.hint then -- Waiting for item scouting to exist
-        --if GetDifficulty()
+        -- if GetDifficulty()
     else
         module.queued_locations["Victory"] = true
         module.profile_manager.set_data("victory", true)
@@ -304,6 +325,8 @@ local old_get_text = GetText
 function GetText(id, r1, r2, r3)
     if id == "Gameover_Timeline" then
         on_defeat(randomizer_helper.tracking.last_attacker)
+    elseif id == "Hangar_Custom" then
+        LOG("custom")
     end
     return old_get_text(id, r1, r2, r3)
 end

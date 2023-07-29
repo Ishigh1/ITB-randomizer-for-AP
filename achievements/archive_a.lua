@@ -52,7 +52,7 @@ end
 
 function module.initialize_achievement_2(achievement, mod)
     achievement.objective = true
-    modapiext.events.onSkillStart:subscribe(save_position)
+    randomizer_helper.events.on_attack:subscribe(save_position)
     modapiext.events.onPawnKilled:subscribe(check_dash)
 end
 

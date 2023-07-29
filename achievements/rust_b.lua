@@ -13,7 +13,7 @@ end
 function module.initialize_achievement_1(achievement, mod)
     achievement.objective = true
 
-    modapiext.events.onSkillStart:subscribe(check_teleport)
+    randomizer_helper.events.on_attack:subscribe(check_teleport)
 end
 
 -- ACHIEVEMENT 2

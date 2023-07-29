@@ -19,7 +19,7 @@ end
 function module.initialize_achievement_1(achievement, mod)
     achievement.objective = 4
 
-    modapiext.events.onSkillStart:subscribe(check_cryo)
+    randomizer_helper.events.on_attack:subscribe(check_cryo)
     modApi.events.onMissionStart:subscribe(reset_cryo)
 end
 
@@ -47,7 +47,7 @@ end
 function module.initialize_achievement_2(achievement, mod)
     achievement.objective = 3
 
-    modapiext.events.onSkillStart:subscribe(check_janus)
+    randomizer_helper.events.on_attack:subscribe(check_janus)
     modapiext.events.onPawnKilled:subscribe(kill_janus)
 end
 

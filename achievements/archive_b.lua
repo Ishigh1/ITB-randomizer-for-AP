@@ -129,7 +129,7 @@ end
 
 function module.initialize_achievement_3(achievement, mod)
     modapiext.events.onPawnPositionChanged:subscribe(register_pushes)
-    modapiext.events.onSkillStart:subscribe(reset_pushes)
+    randomizer_helper.events.on_attack:subscribe(reset_pushes)
     achievement.objective = 3
 end
 
