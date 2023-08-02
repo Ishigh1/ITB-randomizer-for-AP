@@ -49,9 +49,6 @@ function module.handle_bonus(item_name)
                 module.queue.dying = true
                 changed = true
             end
-        else
-            modApi.squad_text[1] = "squad1 "
-            module.randomize_squad()
         end
     end
 
@@ -151,7 +148,7 @@ local function on_slot_connected(slot_data)
         module.profile_manager = require(module.mod.scriptPath .. "profile_manager")(module, seed_name, module.slot)
         module.mod.profile_manager = module.profile_manager
 
-        module.custom = slot_data.custom == true
+        module.custom = slot_data.custom
 
         module.queue = module.profile_manager.get_data("queued_items")
         if module.queue == nil then
@@ -164,14 +161,13 @@ local function on_slot_connected(slot_data)
             win()
         end
 
-        local squad_randomizer = require(module.mod.scriptPath .. "squad_randomizer")
-        squad_randomizer.slot_data = slot_data.squads
-        squad_randomizer.ap_link = module
-        module.randomize_squad = squad_randomizer.edit_squads
+        module.squad_randomizer = require(module.mod.scriptPath .. "squad_randomizer")
+        module.squad_randomizer.slot_data = slot_data.squads
+        module.squad_randomizer.ap_link = module
+        module.squad_randomizer.edit_squads()
 
-        module.randomize_squad()
-
-        require(module.mod.scriptPath .. "squad_lock").initialize(module.mod)
+        module.squad_lock = require(module.mod.scriptPath .. "squad_lock")
+        module.squad_lock.initialize(module)
         require(module.mod.scriptPath .. "upgrades").initialize(module.mod)
 
         modApi.achievements.canBeAdded = function()
@@ -221,7 +217,7 @@ end
 
 local function on_defeat(killer)
     if not module.hint then
-        module.randomize_squad()
+        module.squad_randomizer.edit_squads()
     end
 
     if module.deathlink and module.queue ~= nil and not module.queue.dying then
@@ -273,7 +269,7 @@ local function keep_alive()
             module.AP:poll()
 
             if not module.profile_initializing and module.frame % 60 == 0 then
-                module.randomize_squad()
+                module.squad_randomizer.edit_squads()
 
                 local locations = {}
                 for location_name, _ in pairs(module.queued_locations) do
@@ -325,8 +321,6 @@ local old_get_text = GetText
 function GetText(id, r1, r2, r3)
     if id == "Gameover_Timeline" then
         on_defeat(randomizer_helper.tracking.last_attacker)
-    elseif id == "Hangar_Custom" then
-        LOG("custom")
     end
     return old_get_text(id, r1, r2, r3)
 end

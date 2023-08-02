@@ -44,7 +44,7 @@ end
 -- Code : ^
 
 local function fail_perfect()
-    if module.achievement3:is_active() and module.achievement3:get_flag("failed_perfect") == nil then
+    if module.achievement3:is_active() and module.achievement3:get_flag("failed_perfect") then
         module.achievement3.text = GetVanillaText("Ach_Rust_A_3_Text") .. "\n" .. "Failed"
     end
 end
@@ -56,14 +56,14 @@ local function check_perfect(mission, pawn)
 end
 
 local function reset_perfect()
-    if module.achievement3:is_active() and module.achievement3:get_flag("failed_perfect") == true then
+    if module.achievement3:is_active() and module.achievement3:get_flag("failed_perfect") then
         module.achievement3.text = GetVanillaText("Ach_Rust_A_3_Text")
         module.achievement3:set_flag("failed_perfect", nil)
     end
 end
 
 local function validate_perfect()
-    if module.achievement3:is_active() and module.achievement3:get_flag("failed_perfect") == nil then
+    if module.achievement3:is_active() and not module.achievement3:get_flag("failed_perfect") then
         module.achievement3:addProgress(true)
     end
 end

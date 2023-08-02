@@ -25,10 +25,10 @@ end
 
 -- ACHIEVEMENT 2
 -- Text : Kill 3 enemies with a single attack of the Janus Cannon
--- Code : Kill 3 enemies after using Janus
+-- Code : Kill 3 enemies after using any weapon
 
 local function check_janus(mission, pawn, weapon_id, p1, p2)
-    if module.achievement2:is_active() and string.sub(weapon_id, 16) == "Brute_Mirrorshot" then
+    if module.achievement2:is_active() then
         module.janus = true
     else
         module.janus = nil

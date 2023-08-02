@@ -18,7 +18,7 @@ end
 
 -- ACHIEVEMENT 2
 -- Text : End a battle with 12 tiles on Fire
--- Code : Just have 12 tiles lit at the same time, finishing a battle is too much harder to do
+-- Code : Just have 12 tiles lit at the same time
 
 local function count_fire(fire)
     if module.achievement2:is_active() then

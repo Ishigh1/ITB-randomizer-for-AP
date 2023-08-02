@@ -15,6 +15,47 @@ local function load(self, options, version)
 	LOG("Don't forget to makeitso")
 end
 
+local function find(ui, classes, path)
+	for key, value in pairs(ui) do
+		for k, v in pairs(classes) do
+			if value == v then
+				classes[k] = nil
+				
+				LOG(k)
+				LOG(path)
+				LOG(k)
+				return
+			end
+		end
+	end
+end 
+
+function FindClasses()
+	local ui = sdlext.getUiRoot()
+	local classes = {"Prime", "Brute", "Ranged", "Science", "Cyborg"}
+	local stack = {{ui, ""}}
+	local attempts = 0
+	while classes ~= {} and #stack ~= 0 do
+		local info = table.remove(stack)
+		local ui = info[1]
+		local path = info[2]
+		local attempts = attempts + 1
+		if attempts % 10 == 0 then
+			LOG("Failed " .. path)
+		end
+
+		for i, child in pairs(ui.children) do
+			local new_path = path .. tostring(i)
+			if child.children == nil or child.children == {} then
+				find(child, classes, new_path)
+			else
+				find(child, classes, new_path)
+				table.insert(stack, {ui, new_path})
+			end
+		end
+	end
+end
+
 return {
 	id = "randomizer",
 	name = "Randomizer",

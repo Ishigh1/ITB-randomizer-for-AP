@@ -2,7 +2,7 @@ local module = {}
 
 -- ACHIEVEMENT 1
 -- Text : Have the Chain Whip attack chain through 10 tiles
--- Code : ^
+-- Code : Have any weapon affect 10 tiles
 
 local function register_attack(mission, pawn, weaponId, p1, p2, skillEffect)
     if module.achievement2:is_active() then
@@ -21,7 +21,7 @@ local function register_attack(mission, pawn, weaponId, p1, p2, skillEffect)
                 locs[loc] = 1
                 if affected == 10 then
                     mod_loader.mods["randomizer"].pinnacle_a_1 = module.achievement1
-                    skillEffect:AddScript("mod_loader.mods[\"randomizer\"].pinnacle_a_1 = true")
+                    skillEffect:AddScript("mod_loader.mods[\"randomizer\"].pinnacle_a_1:addProgression(true)")
                 end
             end
         end

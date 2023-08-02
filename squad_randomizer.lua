@@ -18,22 +18,22 @@ local function save_squad_selection()
 end
 
 function module.random_squad(index)
-	local vanilla_squad = module.vanilla_squads[index]
-	local squad_name = vanilla_squad[1]
-	local squad
+    local vanilla_squad = module.vanilla_squads[index]
+    local squad_name = vanilla_squad[1]
+    local squad
     if module.slot_data == nil or module.slot_data[squad_name] == nil then
-		squad = {vanilla_squad[2], vanilla_squad[3], vanilla_squad[4]}
-	else
-		squad = module.slot_data[squad_name]
-	end
+        squad = {vanilla_squad[2], vanilla_squad[3], vanilla_squad[4]}
+    else
+        squad = module.slot_data[squad_name]
+    end
 
-	return {
-		squad_name,
-		squad[1],
-		squad[2],
-		squad[3],
-		id = "squad" .. index
-	}
+    return {
+        squad_name,
+        squad[1],
+        squad[2],
+        squad[3],
+        id = "squad" .. index
+    }
 end
 
 function module.edit_squads()
@@ -50,9 +50,21 @@ function module.edit_squads()
     modApi.mod_squads = {}
     modApi.squad_text = {}
     modApi.squad_icon = {}
+    module.squads = {
+        Prime = {},
+        Brute = {},
+        Ranged = {},
+        Science = {},
+        TechnoVek = {}
+    }
 
     for index = 1, modApi.constants.MAX_SQUADS do
-        modApi:addSquad(module.random_squad(index), "squad" .. index, old_text[index * 2], old_icon[index])
+        local squad = module.random_squad(index)
+        for i = 2, 4, 1 do
+            local unit = _G[squad[i]]
+            table.insert(module.squads[unit.Class], squad[1])
+        end
+        modApi:addSquad(squad, "squad" .. index, old_text[index * 2], old_icon[index])
 
         modApi.squadIndices[index] = #modApi.mod_squads
     end
