@@ -89,8 +89,6 @@ function module.handle_bonus(item_name)
 end
 
 local function add_to_unlocked(item)
-    LOG(item.index)
-    LOG(module.unlocked_items.count)
     if (item.index < module.unlocked_items.count) then
         return true
     end
@@ -134,6 +132,16 @@ local function make_profile()
         file:make_directories()
         modApi:copyFile(module.mod.scriptPath .. "data/profile.lua",
             GetSavedataLocation() .. "profile_" .. Settings.last_profile .. "/profile.lua")
+    end
+end
+
+local function win()
+    if module.hint then -- Waiting for item scouting to exist
+        -- if GetDifficulty()
+    else
+        module.queued_locations["Victory"] = true
+        module.profile_manager.set_data("victory", true)
+        module.frame = 0
     end
 end
 
@@ -284,16 +292,6 @@ local function keep_alive()
                 module.queued_locations = {}
             end
         end
-    end
-end
-
-local function win()
-    if module.hint then -- Waiting for item scouting to exist
-        -- if GetDifficulty()
-    else
-        module.queued_locations["Victory"] = true
-        module.profile_manager.set_data("victory", true)
-        module.frame = 0
     end
 end
 
