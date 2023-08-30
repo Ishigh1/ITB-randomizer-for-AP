@@ -1,6 +1,7 @@
 randomizer_helper = {
     events = {},
-    tracking = {}
+    tracking = {},
+    utils = {}
 }
 randomizer_helper.events.on_vek_action_change = Event()
 randomizer_helper.events.on_overload_change = Event()
@@ -15,12 +16,16 @@ randomizer_helper.events.on_attack = Event()
 randomizer_helper.tracking.current_action = ATTACK_ORDER_IDLE
 local next_action = ATTACK_ORDER_IDLE
 
-randomizer_helper.tracking.last_overload = 0
-
 randomizer_helper.tracking.board = {}
 
 local function reset_board_tracking()
     randomizer_helper.tracking.board = {}
+    randomizer_helper.tracking.board_reset = true
+end
+
+local function reset_game_tracking()
+    randomizer_helper.tracking.last_overload = nil
+    reset_board_tracking()
 end
 
 local function make_tracking()
@@ -36,8 +41,9 @@ end
 
 local function register_game_changes()
     if modApi:getGameState() == "Mission" then
-        if randomizer_helper.tracking.board == {} then
+        if randomizer_helper.tracking.board_reset then
             make_tracking()
+            randomizer_helper.tracking.board_reset = false
         end
 
         randomizer_helper.current_action = next_action
@@ -68,6 +74,16 @@ local function register_game_changes()
         randomizer_helper.tracking.board = {}
         randomizer_helper.tracking.last_attacker = nil
     end
+
+    if Game ~= nil then
+        local overload = Game:GetResist()
+        if overload ~= randomizer_helper.tracking.last_overload then
+            if randomizer_helper.tracking.last_overload ~= nil then
+                randomizer_helper.events.on_overload_change:dispatch(overload - randomizer_helper.tracking.last_overload)
+            end
+            randomizer_helper.tracking.last_overload = overload
+        end
+    end
 end
 
 local function register_attack(mission, pawn, weapon_id, p1, p2)
@@ -77,11 +93,38 @@ end
 
 
 modApi.events.onFrameDrawn:subscribe(register_game_changes)
-modApi.events.onMissionUpdate:subscribe(register_game_changes)
 modApi.events.onMissionStart:subscribe(reset_board_tracking)
-modApi.events.onPostLoadGame:subscribe(reset_board_tracking)
+modApi.events.onPostLoadGame:subscribe(reset_game_tracking)
+modApi.events.onPostStartGame:subscribe(reset_game_tracking)
 
 modapiext.events.onSkillStart:subscribe(register_attack)
 modapiext.events.onFinalEffectStart:subscribe(register_attack)
 modapiext.events.onQueuedSkillStart:subscribe(register_attack)
 modapiext.events.onQueuedFinalEffectStart:subscribe(register_attack)
+
+function randomizer_helper.utils.compute_push(effects)
+    local pushs = {}
+    for i = 1, effects:size() do
+        local space_damage = effects:index(i)
+        local loc = space_damage.loc
+        local pawn = Board:GetPawn(loc)
+        if pawn ~= nil and space_damage.iPush <= 3 and not pawn:IsGuarding() then
+            pushs[loc] = loc + DIR_VECTORS[space_damage.iPush]
+        end
+    end
+
+    local free_spaces = {}
+    local moved = true
+    while moved do
+        moved = false
+        for pawn_loc, target_loc in pairs(pushs) do
+            local terrain = Board:GetTerrain(target_loc)
+            if free_spaces[target_loc] or (Board:GetPawn(target_loc) == nil and terrain ~= TERRAIN_MOUNTAIN and terrain ~= TERRAIN_BUILDING) then
+                free_spaces[pawn_loc] = true
+                moved = true
+            end
+        end
+    end
+
+    return pushs
+end
