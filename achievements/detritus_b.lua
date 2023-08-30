@@ -34,20 +34,20 @@ end
 local function check_immortality(mission, pawn)
     if module.achievement2:is_active() and pawn:IsPlayer() then
         mortality()
-        module.achievement2:set_flag("failed_immortality", true)
+        module.achievement2:set_data("failed_immortality", true)
     end
 end
 
 local function regain_immortality()
     if module.achievement2:is_active() then
         module.achievement2:resetProgress()
-        module.achievement2:set_flag("Ach_Detritus_B_2_failed_immortality", nil)
+        module.achievement2:set_data("Ach_Detritus_B_2_failed_immortality", nil)
         module.achievement2.text = GetVanillaText("Ach_Detritus_B_2_Text")
     end
 end
 
 local function gain_immortality(island)
-    if module.achievement2:is_active() and module.achievement2:get_flag("Ach_Detritus_B_2_failed_immortality") == nil then
+    if module.achievement2:is_active() and module.achievement2:get_data("Ach_Detritus_B_2_failed_immortality") == nil then
         module.achievement2:addProgress(1)
     end
 end
