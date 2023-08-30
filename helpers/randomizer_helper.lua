@@ -121,6 +121,7 @@ function randomizer_helper.utils.compute_push(effects)
             local terrain = Board:GetTerrain(target_loc)
             if free_spaces[target_loc] or (Board:GetPawn(target_loc) == nil and terrain ~= TERRAIN_MOUNTAIN and terrain ~= TERRAIN_BUILDING) then
                 free_spaces[pawn_loc] = true
+                pushs[pawn_loc] = nil
                 moved = true
             end
         end

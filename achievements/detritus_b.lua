@@ -64,28 +64,59 @@ end
 -- Text : Deal 8 damage to a unit with a single attack
 -- Code : Make so that any unit loses 8 hp in a single skill
 
-local function start_attack(mission, pawn, weapon_id, p1, p2)
-    if module.achievement3:is_active() then
-        module.attack = {}
+local function handle_effect(effects, skillEffect, method)
+    if effects == nil then
+        return
+    end
+
+    local total_damage = {}
+    for i = 1, effects:size() do
+        local space_damage = effects:index(i)
+        local loc = space_damage.loc
+        local pawn = Board:GetPawn(loc)
+        if pawn ~= nil and pawn:IsEnemy() then
+            local damage = space_damage.iDamage
+            if pawn:IsAcid() then
+                damage = damage * 2
+            end
+
+            local pawn_id = pawn:GetId()
+            total_damage[pawn_id] = damage + (total_damage[pawn_id] or 0)
+        end
+    end
+
+    local pushs = randomizer_helper.utils.compute_push(effects)
+    for start_location, target_location in pairs(pushs) do
+        local pawn = Board:GetPawn(start_location)
+        local pawn_id = pawn:GetId()
+        total_damage[pawn_id] = 1 + (total_damage[pawn_id] or 0)
+
+        pawn = Board:GetPawn(start_location)
+        if pawn ~= nil then
+            pawn_id = pawn:GetId()
+            total_damage[pawn_id] = 1 + (total_damage[pawn_id] or 0)
+        end
+    end
+
+    for _, damage in pairs(total_damage) do
+        if damage >= 8 then
+            mod_loader.mods["randomizer"].detritus_b_3 = module.achievement3
+            skillEffect[method](skillEffect, "mod_loader.mods[\"randomizer\"].detritus_b_3.addProgress(true)")
+            return
+        end
     end
 end
 
-local function register_damage(mission, pawn, damage_taken)
-    if module.achievement3:is_active() and module.attack ~= nil then
-        local id = pawn:GetId()
-        local total_damage = (module.attack[id] or 0) + damage_taken
-        if total_damage >= 8 then
-            module.achievement3:addProgress(true)
-        else
-            module.attack[id] = total_damage
-        end
+local function register_attack(mission, pawn, weaponId, p1, p2, skillEffect)
+    if module.achievement3:is_active() then
+        handle_effect(skillEffect.effect, skillEffect, "AddScript")
+        handle_effect(skillEffect.q_effect, skillEffect, "AddQueuedScript")
     end
 end
 
 function module.initialize_achievement_3(achievement, mod)
     achievement.objective = true
-    randomizer_helper.events.on_attack:subscribe(start_attack)
-    modapiext.events.onPawnDamaged:subscribe(register_damage)
+    modapiext.events.onSkillBuild:subscribe(register_attack)
 end
 
 return module
