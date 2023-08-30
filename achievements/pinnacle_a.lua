@@ -5,7 +5,7 @@ local module = {}
 -- Code : I don't know how do do this one well, so just kill someone with Attraction Pulse
 
 local function check_pull(mission, pawn, weapon_id, p1, p2)
-    if module.achievement1:is_active() and string.sub(weapon_id, 16) == "Science_Pullmech" then
+    if module.achievement1:is_active() and string.sub(weapon_id, 0, 16) == "Science_Pullmech" then
         module.pull = true
     else
         module.pull = nil
@@ -28,26 +28,30 @@ end
 -- ACHIEVEMENT 2
 -- Text : Hit 4 enemies with a single laser
 -- Code : Have 4 enemies in your attack area with a laser weapon
-local function register_attack(mission, pawn, weaponId, p1, p2, skillEffect)
-    if module.achievement2:is_active() then
-        local effects = skillEffect.effect
-        if effects == nil then
-            return
-        end
+local function handle_effect(effects, skillEffect, method)
+    if effects == nil then
+        return
+    end
 
-        local affected = 0
-        for i = 1, effects:size() do
-            local space_damage = effects:index(i)
-            local loc = space_damage.loc
-            local pawn = Board:GetPawn(loc)
-            if pawn ~= nil and pawn:IsEnemy() then
-                affected = affected + 1
-                if affected == 4 then
-                    mod_loader.mods["randomizer"].pinnacle_a_2 = module.achievement2
-                    skillEffect:AddScript("mod_loader.mods[\"randomizer\"].pinnacle_a_2 = true")
-                end
+    local affected = 0
+    for i = 1, effects:size() do
+        local space_damage = effects:index(i)
+        local loc = space_damage.loc
+        local pawn = Board:GetPawn(loc)
+        if pawn ~= nil and pawn:IsEnemy() then
+            affected = affected + 1
+            if affected == 4 then
+                mod_loader.mods["randomizer"].pinnacle_a_2 = module.achievement2
+                skillEffect[method](skillEffect, "mod_loader.mods[\"randomizer\"].pinnacle_a_2.addProgress(true)")
             end
         end
+    end
+end
+
+local function register_attack(mission, pawn, weaponId, p1, p2, skillEffect)
+    if module.achievement2:is_active() then
+        handle_effect(skillEffect.effect, skillEffect, "AddScript")
+        handle_effect(skillEffect.q_effect, skillEffect, "AddQueuedScript")
     end
 end
 
@@ -62,7 +66,7 @@ end
 -- Code : Have a mech or building lose shield 4 times
 
 local function notice_pawn_shield(mission, pawn, isShield)
-	if module.achievement3:is_active() and isShield then
+	if module.achievement3:is_active() and not isShield then
 		module.achievement3:addProgress(1)
 	end
 end

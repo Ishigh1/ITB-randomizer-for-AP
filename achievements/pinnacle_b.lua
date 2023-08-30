@@ -5,7 +5,7 @@ local module = {}
 -- Code : ^
 
 local function check_cryo(mission, pawn, weapon_id, p1, p2)
-    if module.achievement1:is_active() and string.sub(weapon_id, 10) == "Ranged_Ice" then
+    if module.achievement1:is_active() and string.sub(weapon_id, 0, 10) == "Ranged_Ice" then
         module.achievement1:addProgress(1)
     end
 end
@@ -30,16 +30,14 @@ end
 local function check_janus(mission, pawn, weapon_id, p1, p2)
     if module.achievement2:is_active() then
         module.janus = true
+        module.achievement2:resetProgress()
     else
         module.janus = nil
-        if module.achievement2:is_active() then
-            module.achievement2:reset()
-        end
     end
 end
 
 local function kill_janus(mission, pawn)
-    if module.janus and module.achievement2:is_active() and pawn:isEnemy() and Game:GetTeamTurn() == TEAM_PLAYER then
+    if module.janus and module.achievement2:is_active() and pawn:IsEnemy() and Game:GetTeamTurn() == TEAM_PLAYER then
         module.achievement2:addProgress(1)
     end
 end
@@ -56,31 +54,31 @@ end
 -- Code : ^
 
 local function fail_pacifist()
-    if module.achievement3:is_active() and (module.achievement3:get_flag("kills") or 0) >= 3 then
+    if module.achievement3:is_active() and (module.achievement3:get_data("kills") or 0) >= 3 then
         module.achievement3.text = GetVanillaText("Ach_Pinnacle_B_3_Text") .. "\n" .. "Failed"
     end
 end
 
 local function not_very_pacifist(mission, pawn)
-    if module.achievement3:is_active() and pawn:isEnemy() then
-        local killed = (module.achievement3:get_flag("kills") or 0) + 1
+    if module.achievement3:is_active() and pawn:IsEnemy() then
+        local killed = (module.achievement3:get_data("kills") or 0) + 1
 
         if killed >= 3 then
             module.achievement3.text = GetVanillaText("Ach_Pinnacle_B_3_Text") .. "\n" .. "Failed"
         end
-        module.achievement3:set_flag("kills", killed)
+        module.achievement3:set_data("kills", killed)
     end
 end
 
 local function become_pacifist()
-    if module.achievement3:is_active() and (module.achievement3:get_flag("kills") or 0) < 3 then
+    if module.achievement3:is_active() and (module.achievement3:get_data("kills") or 0) < 3 then
         module.achievement3:addProgress(true)
     end
 end
 
 local function reset_pacifist()
     if module.achievement3:is_active() then
-        module.achievement3:set_flag("kills", nil)
+        module.achievement3:set_data("kills", nil)
         module.achievement3.text = GetVanillaText("Ach_Pinnacle_B_3_Text")
     end
 end
