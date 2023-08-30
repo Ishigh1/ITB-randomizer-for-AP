@@ -1,5 +1,6 @@
 return function(ap_link, seed_name, slot)
     local all_profiles = modApi:readProfileData("randomizer_profiles")
+    local new = false
     if all_profiles == nil then
         all_profiles = {}
     end
@@ -20,7 +21,7 @@ return function(ap_link, seed_name, slot)
 
     function module.set_data(name, value)
         current_profile[name] = value
-        modApi:writeProfileData("randomizer_profiles", all_profiles)
+        new = true
     end
 
     function module.get_achievement_data(achievement, name)
@@ -37,11 +38,11 @@ return function(ap_link, seed_name, slot)
             current_profile[achievement.id] = achievement_data
         end
         achievement_data[name] = value
-        modApi:writeProfileData("randomizer_profiles", all_profiles)
+        new = true
     end
 
     function module.register_achievement(achievement, team)
-        if ap_link.custom then
+        if true or ap_link.custom then
             function achievement:is_active()
                 return GAME ~= nil and not self:isComplete()
             end
@@ -70,15 +71,24 @@ return function(ap_link, seed_name, slot)
 
         local progress = achievement:get_data("progress")
         if progress ~= nil then
-            achievement:addProgress(progress)
+            achievement:setProgress(progress)
         end
 
-        local old_add_progress = achievement.addProgress
-        function achievement:addProgress(progress)
-            old_add_progress(self, progress)
-            achievement:set_achievement_data("progress", achievement:getProgress())
+        local old_set_progress = achievement.setProgress
+        function achievement:setProgress(progress)
+            old_set_progress(self, progress)
+            achievement:set_data("progress", achievement:getProgress())
         end
     end
+
+    local function save_data()
+        if new then
+            modApi:writeProfileData("randomizer_profiles", all_profiles)
+            new = false
+        end
+    end
+
+    modApi.events.onSaveDataUpdated:subscribe(save_data)
 
     return module
 end

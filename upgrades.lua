@@ -22,8 +22,8 @@ local function get_starting_bonuses()
     GetGame():ModifyPowerGrid(value)
 
     module.def_malus = (module.ap_link.unlocked_items["3 Starting Grid Defense"] or 0) * 3 - 15
-    Game:SetResist(module.def_malus)
     randomizer_helper.tracking.last_overload = module.def_malus
+    Game:SetResist(module.def_malus)
 
     modApi:writeProfileData("applied_grid", true)
 
