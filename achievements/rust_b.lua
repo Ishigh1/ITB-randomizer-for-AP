@@ -49,9 +49,9 @@ end
 local function pawn_fire(mission, pawn, isFire)
     if module.achievement3:is_active() and pawn:IsEnemy() then
         if isFire then
-            module.achievement2:addProgress(1)
+            module.achievement3:addProgress(1)
         else
-            module.achievement2:addProgress(-1)
+            module.achievement3:addProgress(-1)
         end
     end
 end
