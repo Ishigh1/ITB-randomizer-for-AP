@@ -184,6 +184,8 @@ local function on_slot_connected(slot_data)
         local achievements = require(module.mod.scriptPath .. "achievements/global")
         achievements.initialize(module.mod)
         achievements.add_achievements()
+
+        module.gift_API:open_giftbox(true, {})
     end
     module.ui:detach()
     module.ui = nil
@@ -245,6 +247,39 @@ local function on_defeat(killer)
     end
 end
 
+local function on_gift_notification()
+    if GetCurrentMission() == modApi.current_mission then
+        module.gift_API:start_gift_recovery(-1)
+    end
+end
+
+local function on_gift_received(gift)
+    if GetCurrentMission() == modApi.current_mission then
+        local handled = false
+        for _, v in pairs(gift.Traits) do
+            local trait_name = v.Trait
+            local strength = v.Quality * v.Duration * gift.Item.Amount
+            if trait_name == "Armor" then
+                for i = 0.5, strength, 0.5 do
+                    handled = true
+                    local point = Point(math.random(1, 8), math.random(1, 8))
+                    local damage = SpaceDamage(point,0)
+                    damage.iShield = EFFECT_CREATE
+                    Board:AddEffect(damage)
+                end
+            end
+        end
+        if handled then
+            modApi.toasts:add({
+                title = "Gift Received",
+                name = gift.Item.Name
+            })
+        end
+        return handled
+    end
+    return false
+end
+
 local function initialize_socket()
     LOG("Initializing Socket")
 
@@ -256,6 +291,10 @@ local function initialize_socket()
     local server = module.server
 
     module.AP = module.ap_dll(very_unique_id, game_name, server)
+    module.gift_API = require(module.mod.scriptPath .. "ap/gift-api/init")
+    module.gift_API:init(module.AP)
+    module.gift_API:set_gift_notification_handler(on_gift_notification)
+    module.gift_API:set_gift_handler(on_gift_received)
 
     module.AP:set_room_info_handler(on_room_info)
     module.AP:set_slot_connected_handler(on_slot_connected)
@@ -295,6 +334,10 @@ local function keep_alive()
     end
 end
 
+local function check_giftbox()
+    module.gift_API:start_gift_recovery(-1)
+end
+
 function module.init(mod)
     module.frame = 0
     module.queued_locations = {}
@@ -308,6 +351,7 @@ function module.init(mod)
     modApi.events.onGameVictory:subscribe(win)
     modApi.events.onMainMenuEntered:subscribe(ap_ui)
     modApi.events.onFrameDrawn:subscribe(keep_alive)
+    modApi.events.onMissionStart:subscribe(check_giftbox)
 end
 
 function module.complete_location(location_name)

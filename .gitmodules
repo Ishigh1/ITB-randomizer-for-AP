@@ -1,0 +1,3 @@
+[submodule "ap/gift-api"]
+	path = ap/gift-api
+	url = https://github.com/Ishigh1/lua-gifting-API-for-AP.git
