@@ -79,7 +79,7 @@ end
 
 local function check_team_kill(mission, pawn)
     if module.achievement2:is_active() and pawn:IsEnemy() and
-        (randomizer_helper.events.current_action == ATTACK_ORDER_TENTACLES or randomizer_helper.events.current_action ==
+        (randomizer_helper.tracking.current_action == ATTACK_ORDER_TENTACLES or randomizer_helper.tracking.current_action ==
             ATTACK_ORDER_IDLE) then
         module.achievement2:addProgress(1)
     end
@@ -103,7 +103,7 @@ end
 -- Code : See 3 enemy moves following an attack
 
 local function register_pushes(mission, pawn)
-    if module.achievement3:is_active() and pawn:IsEnemy() and Game:GetTeamTurn() == TEAM_PLAYER then
+    if module.achievement3:is_active() and pawn:IsEnemy() and randomizer_helper.utils.is_player_turn() then
         module.achievement3:addProgress(1)
     end
 end

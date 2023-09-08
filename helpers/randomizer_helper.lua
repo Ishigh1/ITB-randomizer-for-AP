@@ -46,9 +46,9 @@ local function register_game_changes()
             randomizer_helper.tracking.board_reset = false
         end
 
-        randomizer_helper.current_action = next_action
+        randomizer_helper.tracking.current_action = next_action
         next_action = memedit:require().board.getAttackOrder()
-        if next_action ~= randomizer_helper.current_action then
+        if next_action ~= randomizer_helper.tracking.current_action then
             randomizer_helper.events.on_vek_action_change:dispatch(next_action)
         end
 
@@ -128,4 +128,8 @@ function randomizer_helper.utils.compute_push(effects)
     end
 
     return pushs
+end
+
+function randomizer_helper.utils.is_player_turn()
+    return Game:GetTeamTurn() == TEAM_PLAYER and randomizer_helper.tracking.current_action == ATTACK_ORDER_IDLE
 end

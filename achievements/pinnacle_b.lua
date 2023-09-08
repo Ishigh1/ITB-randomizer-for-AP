@@ -5,7 +5,7 @@ local module = {}
 -- Code : ^
 
 local function check_cryo(mission, pawn, weapon_id, p1, p2)
-    if module.achievement1:is_active() and string.sub(weapon_id, 0, 10) == "Ranged_Ice" then
+    if module.achievement1:is_active() and weapon_id == "Ranged_Ice" then
         module.achievement1:addProgress(1)
     end
 end
@@ -37,7 +37,7 @@ local function check_janus(mission, pawn, weapon_id, p1, p2)
 end
 
 local function kill_janus(mission, pawn)
-    if module.janus and module.achievement2:is_active() and pawn:IsEnemy() and Game:GetTeamTurn() == TEAM_PLAYER then
+    if module.janus and module.achievement2:is_active() and pawn:IsEnemy() and randomizer_helper.utils.is_player_turn() then
         module.achievement2:addProgress(1)
     end
 end

@@ -13,8 +13,8 @@ local function check_pull(mission, pawn, weapon_id, p1, p2)
 end
 
 local function kill_pull(mission, pawn)
-    if module.pull and module.achievement1:is_active() and pawn:isEnemy() and Game:GetTeamTurn() == TEAM_PLAYER then
-        module.achievement2:addProgress(true)
+    if module.pull and module.achievement1:is_active() and pawn:isEnemy() and randomizer_helper.utils.is_player_turn() == TEAM_PLAYER then
+        module.achievement1:addProgress(true)
     end
 end
 
@@ -42,7 +42,7 @@ local function handle_effect(effects, skillEffect, method)
             affected = affected + 1
             if affected == 4 then
                 mod_loader.mods["randomizer"].pinnacle_a_2 = module.achievement2
-                skillEffect[method](skillEffect, "mod_loader.mods[\"randomizer\"].pinnacle_a_2.addProgress(true)")
+                skillEffect[method](skillEffect, "mod_loader.mods[\"randomizer\"].pinnacle_a_2:addProgress(true)")
             end
         end
     end

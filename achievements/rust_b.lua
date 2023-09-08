@@ -47,11 +47,20 @@ end
 -- Text : Have 5 enemies on Fire simultaneously
 -- Code : ^
 local function pawn_fire(mission, pawn, isFire)
-    if module.achievement3:is_active() and pawn:IsEnemy() then
-        if isFire then
-            module.achievement3:addProgress(1)
-        else
-            module.achievement3:addProgress(-1)
+    if module.achievement3:is_active() then
+        if isFire and pawn:IsEnemy() then
+            local pawns = extract_table(Board:GetPawns(TEAM_ENEMY))
+            local fire = 0
+            for i,id in pairs(pawns) do
+                local pawn = Board:GetPawn(id)
+                if pawn:IsFire() then
+                    fire = fire + 1
+                    if fire == 5 then
+                        module.achievement3:addProgress(true)
+                        return
+                    end
+                end
+            end
         end
     end
 end

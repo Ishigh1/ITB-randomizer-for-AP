@@ -101,7 +101,7 @@ local function handle_effect(effects, skillEffect, method)
     for _, damage in pairs(total_damage) do
         if damage >= 8 then
             mod_loader.mods["randomizer"].detritus_b_3 = module.achievement3
-            skillEffect[method](skillEffect, "mod_loader.mods[\"randomizer\"].detritus_b_3.addProgress(true)")
+            skillEffect[method](skillEffect, "mod_loader.mods[\"randomizer\"].detritus_b_3:addProgress(true)")
             return
         end
     end

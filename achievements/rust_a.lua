@@ -18,10 +18,10 @@ end
 
 -- ACHIEVEMENT 2
 -- Text : Deal 12 damage with Electric Smoke in a single battle
--- Code : See 12 damages in ATTACK_ORDER_LIGHTNING 
+-- Code : See 12 damages in ATTACK_ORDER_LIGHTNING. Also counts explosions happening at that time
 
 local function check_smoke(mission, pawn, damage)
-    if module.achievement2:is_active() and randomizer_helper.events.current_action == ATTACK_ORDER_LIGHTNING then
+    if module.achievement2:is_active() and randomizer_helper.tracking.current_action == ATTACK_ORDER_LIGHTNING then
         module.achievement2:addProgress(damage)
     end
 end
@@ -45,6 +45,7 @@ end
 
 local function fail_perfect()
     if module.achievement3:is_active() and module.achievement3:get_data("failed_perfect") then
+        module.achievement3:set_data("failed_perfect", true)
         module.achievement3.text = GetVanillaText("Ach_Rust_A_3_Text") .. "\n" .. "Failed"
     end
 end

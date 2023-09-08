@@ -14,12 +14,14 @@ local function handle_effect(effects, skillEffect, method)
     for i = 1, effects:size() do
         local space_damage = effects:index(i)
         local loc = space_damage.loc
-        if locs[loc] == nil then
+        local loc_id = loc.x + loc.y * 10
+        if locs[loc_id] == nil and loc_id >= 0 then
             affected = affected + 1
-            locs[loc] = 1
+            locs[loc_id] = 1
             if affected == 10 then
                 mod_loader.mods["randomizer"].pinnacle_a_1 = module.achievement1
                 skillEffect[method](skillEffect, "mod_loader.mods[\"randomizer\"].pinnacle_a_1:addProgress(true)")
+                return
             end
         end
     end
@@ -50,7 +52,7 @@ local function reset_speedrun()
 end
 
 local function check_speedrun(island)
-    if module.achievement2:is_active() and (os.time() - module.achievement2:get_data("start") / 60 <= 30)  then
+    if module.achievement2:is_active() and ((os.time() - module.achievement2:get_data("start") / 60) <= 30)  then
         module.achievement2:addProgress(1)
     end
 end
