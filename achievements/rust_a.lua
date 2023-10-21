@@ -44,7 +44,7 @@ end
 -- Code : ^
 
 local function fail_perfect()
-    if module.achievement3:is_active() and module.achievement3:get_data("failed_perfect") then
+    if module.achievement3:is_active() and not module.achievement3:get_data("failed_perfect") then
         module.achievement3:set_data("failed_perfect", true)
         module.achievement3.text = GetVanillaText("Ach_Rust_A_3_Text") .. "\n" .. "Failed"
     end
