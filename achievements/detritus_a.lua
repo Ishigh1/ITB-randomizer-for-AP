@@ -81,7 +81,7 @@ end
 
 function module.initialize_achievement_3(achievement, mod)
     achievement.objective = 4
-    GameEvents["onSpawnBlocked"]:subscribe(notice_block)
+    GameEvents.onSpawnBlocked:subscribe(notice_block)
     randomizer_helper.events.on_vek_action_change:subscribe(reset_block)
 end
 

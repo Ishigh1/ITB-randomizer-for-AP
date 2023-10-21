@@ -96,21 +96,21 @@ end
 -- Code : Have a mech or building lose shield 4 times
 
 local function notice_pawn_shield(mission, pawn, isShield)
-	if module.achievement3:is_active() and not isShield then
-		module.achievement3:addProgress(1)
-	end
+    if module.achievement3:is_active() and not isShield then
+        module.achievement3:addProgress(1)
+    end
 end
 
 local function count_shield(shield)
-	if module.achievement3:is_active() and not shield then
-		module.achievement3:addProgress(1)
-	end
+    if module.achievement3:is_active() and not shield then
+        module.achievement3:addProgress(1)
+    end
 end
 
 local function reset_shield()
-	if module.achievement3:is_active() then
-		module.achievement3:resetProgress()
-	end
+    if module.achievement3:is_active() then
+        module.achievement3:resetProgress()
+    end
 end
 
 function module.initialize_achievement_3(achievement, mod)
