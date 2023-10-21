@@ -42,7 +42,7 @@ return function(ap_link, seed_name, slot)
     end
 
     function module.register_achievement(achievement, team)
-        if true or ap_link.custom then
+        if ap_link.custom then
             function achievement:is_active()
                 return GAME ~= nil and not self:isComplete() and (Board == nil or not modapiext.weapon:isTipImage())
             end
@@ -50,7 +50,9 @@ return function(ap_link, seed_name, slot)
             function achievement:is_active()
                 return GAME ~= nil and not self:isComplete() and (
                     GAME.additionalSquadData.squad == team --When outside of battle
-                    or (GAME.additionalSquadData.squad == self.squad and not modapiext.weapon:isTipImage()) -- When in battle
+                    or (GAME.additionalSquadData.squad == self.squad and -- When in battle
+                    (Board == nil or --Just exiting a battle
+                    not modapiext.weapon:isTipImage())) -- Avoid counting weapon preview
             )
             end
         end
