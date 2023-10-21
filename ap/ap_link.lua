@@ -254,11 +254,15 @@ local function on_gift_notification()
 end
 
 local function on_gift_received(gift)
+    local name = gift.Amount .. " * " .. gift.ItemName
+    LOG("Received " .. name)
     if GetCurrentMission() == modApi.current_mission then
         local handled = false
         for _, v in pairs(gift.Traits) do
             local trait_name = v.Trait
-            local strength = v.Quality * v.Duration * gift.Item.Amount
+            local amount = v.Duration * gift.Amount
+            local quality = v.Quality
+            local strength = quality * amount
             if trait_name == "Armor" then
                 for i = 0.5, strength, 0.5 do
                     handled = true
@@ -267,12 +271,23 @@ local function on_gift_received(gift)
                     damage.iShield = EFFECT_CREATE
                     Board:AddEffect(damage)
                 end
+            elseif trait_name == "Egg" then
+                for i = 1, amount, 1 do
+                    handled = true
+                    local spawn_name
+                    if math.random(1, 100 * quality) < 50 then
+                        spawn_name = module.gift_data.enemy_gift[GAME.Island][math.random(1, 5)]
+                    else
+                        spawn_name = module.gift_data.ally_gift[math.random(1, 5)]
+                    end
+                    Board:SpawnPawn(spawn_name)
+                end
             end
         end
         if handled then
             modApi.toasts:add({
                 title = "Gift Received",
-                name = gift.Item.Name
+                name = name
             })
         end
         return handled
@@ -352,6 +367,8 @@ function module.init(mod)
     modApi.events.onMainMenuEntered:subscribe(ap_ui)
     modApi.events.onFrameDrawn:subscribe(keep_alive)
     modApi.events.onMissionStart:subscribe(check_giftbox)
+
+    module.gift_data = require(mod.scriptPath .. "ap/gift_data")
 end
 
 function module.complete_location(location_name)
