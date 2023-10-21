@@ -2,27 +2,57 @@ local module = {}
 
 -- ACHIEVEMENT 1
 -- Text : Kill an enemy by pulling it into yourself
--- Code : I don't know how do do this one well, so just kill someone with Attraction Pulse
+-- Code : ^
 
-local function check_pull(mission, pawn, weapon_id, p1, p2)
-    if module.achievement1:is_active() and string.sub(weapon_id, 0, 16) == "Science_Pullmech" then
-        module.pull = true
-    else
-        module.pull = nil
+
+local function handle_effect(pawn, effects, skillEffect, method)
+    if effects == nil then
+        return
+    end
+
+    local pushs = randomizer_helper.utils.compute_push(effects)
+    local space = pawn:GetSpace()
+    for start_location, target_location in pairs(pushs) do
+        local enemy = Board:GetPawn(start_location)
+        if enemy:IsEnemy() and space == target_location then
+            mod_loader.mods["randomizer"].pinnacle_a_1 = module.achievement1
+            skillEffect[method](skillEffect, "table.insert(mod_loader.mods[\"randomizer\"].pinnacle_a_1.pulled, " .. enemy:GetId() .. ")")
+        end
     end
 end
 
-local function kill_pull(mission, pawn)
-    if module.pull and module.achievement1:is_active() and pawn:isEnemy() and randomizer_helper.utils.is_player_turn() == TEAM_PLAYER then
-        module.achievement1:addProgress(true)
+local function register_attack(mission, pawn, weaponId, p1, p2, skillEffect)
+    if module.achievement1:is_active() and pawn ~= nil and pawn:IsPlayer() then
+        module.achievement1.pulled = {}
+        handle_effect(pawn, skillEffect.effect, skillEffect, "AddScript")
+        handle_effect(pawn, skillEffect.q_effect, skillEffect, "AddQueuedScript")
+    end
+end
+
+local function test_deadly_pull(mission, pawn)
+    if module.achievement1:is_active() then
+        local id = pawn:GetId()
+        for _, v in pairs(module.achievement1.pulled) do
+            if v == id then
+                module.achievement1:addProgress(true)
+                return
+            end
+        end
+    end
+end
+
+local function reset_pull(action)
+    if action == ATTACK_ORDER_IDLE and module.achievement1:is_active() then
+        module.achievement1.pulled = {}
     end
 end
 
 function module.initialize_achievement_1(achievement, mod)
     achievement.objective = true
 
-    randomizer_helper.events.on_attack:subscribe(check_pull)
-    modapiext.events.onPawnKilled:subscribe(kill_pull)
+    modapiext.events.onSkillBuild:subscribe(register_attack)
+    modapiext.events.onPawnKilled:subscribe(test_deadly_pull)
+    randomizer_helper.events.on_vek_action_change:subscribe(reset_pull)
 end
 
 -- ACHIEVEMENT 2
