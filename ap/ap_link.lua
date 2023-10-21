@@ -32,6 +32,9 @@ function module.handle_bonus(item_name)
         elseif item_name == "-1 Grid Power" then
             module.queue.power = module.queue.power - 1
             changed = true
+        elseif item_name == "Boss Enemy" then
+            module.queue.boss = module.queue.boss + 1
+            changed = true
         elseif item_name == "New Game" then -- Dummy item to not rewrite the logic
             module.queue.starting_defense = 0
             module.queue.starting_power = 0
@@ -43,6 +46,7 @@ function module.handle_bonus(item_name)
             module.queue.starting_power = 0
             module.queue.defense = 0
             module.queue.power = 0
+            module.queue.boss = 0
             changed = true
         elseif item_name == "DeathLink" then
             if Game ~= nil then
@@ -80,6 +84,13 @@ function module.handle_bonus(item_name)
             module.queue.starting_power = 0
             module.queue.power = 0
             changed = true
+        end
+
+        if module.queue.boss > 0 then
+            for i = 1, module.queue.boss, 1 do
+                local boss = module.gift_data.boss_enemies[math.random(1, 8)]
+                Board:SpawnPawn(boss)
+            end
         end
     end
 
