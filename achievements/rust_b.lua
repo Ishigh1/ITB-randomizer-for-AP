@@ -51,7 +51,7 @@ local function pawn_fire(mission, pawn, isFire)
         if isFire and pawn:IsEnemy() then
             local pawns = extract_table(Board:GetPawns(TEAM_ENEMY))
             local fire = 0
-            for i,id in pairs(pawns) do
+            for i, id in pairs(pawns) do
                 local pawn = Board:GetPawn(id)
                 if pawn:IsFire() then
                     fire = fire + 1

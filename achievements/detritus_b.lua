@@ -28,7 +28,7 @@ end
 
 local function mortality()
     module.achievement2.text = GetVanillaText("Ach_Detritus_B_2_Text") .. "\n" ..
-                                   GetVanillaText("Ach_Detritus_B_2_Failed")
+        GetVanillaText("Ach_Detritus_B_2_Failed")
 end
 
 local function check_immortality(mission, pawn)

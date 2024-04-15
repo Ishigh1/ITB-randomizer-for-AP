@@ -18,7 +18,7 @@ local function get_starting_bonuses()
     for i, mission in ipairs(GAME.Missions) do
         mission.PowerStart = 5 + value
     end
-    
+
     GetGame():ModifyPowerGrid(value)
 
     module.def_malus = (module.ap_link.unlocked_items["3 Starting Grid Defense"] or 0) * 3 - 15

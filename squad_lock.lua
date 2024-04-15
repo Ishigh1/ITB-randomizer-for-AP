@@ -29,7 +29,7 @@ local function add_lock(page, id)
     if page == 0 or page == nil then
         return
     end
-    
+
     if module.ap_link.custom then
         if page == 1 and id == 1 then
             return
@@ -40,29 +40,29 @@ local function add_lock(page, id)
             return
         end
     end
-    
+
     local x = (id % 2) * (635 + 315 - 455 - 50 + 20 + 5)
-    local y =  math.floor(id / 2) * (69 + 20 + 20 - 10)
+    local y = math.floor(id / 2) * (69 + 20 + 20 - 10)
     local ui = Ui()
         :widthpx(455)
         :heightpx(100)
         :setxpx(Boxes.hangar_select_big.x + 25 + x)
         :setypx(Boxes.hangar_select_big.y + 30 + y)
-        :decorate{DecoSolid(deco.colors.framebg) }
+        :decorate { DecoSolid(deco.colors.framebg) }
         :beginUi()
-            :width(1)
-            :height(1)
-            :decorate{
-                DecoFrame(),
-                DecoAlign(-3,-4),
-                DecoAlignedText(
-                    "Not unlocked",
-                    deco.fonts.labelfont,
-                    deco.textset(deco.colors.buttonborder),
-                    "center", 
-                    "center"
-                )
-            }
+        :width(1)
+        :height(1)
+        :decorate {
+            DecoFrame(),
+            DecoAlign(-3, -4),
+            DecoAlignedText(
+                "Not unlocked",
+                deco.fonts.labelfont,
+                deco.textset(deco.colors.buttonborder),
+                "center",
+                "center"
+            )
+        }
         :endUi()
         :addTo(sdlext.getUiRoot())
         :bringToTop()
@@ -95,27 +95,27 @@ local function lock_custom()
     local left = Boxes.hangar_select_big.x + 70
     local top = Boxes.hangar_select_big.y + 30
     for i, j in ipairs(module.squad_randomizer.squads[current_tab]) do
-        if not module.ap_link.unlocked_items[j] then 
+        if not module.ap_link.unlocked_items[j] then
             local ui = Ui()
                 :widthpx(125)
                 :heightpx(100)
                 :setxpx(left)
                 :setypx(top)
-                :decorate{DecoSolid(deco.colors.framebg) }
+                :decorate { DecoSolid(deco.colors.framebg) }
                 :beginUi()
-                    :width(1)
-                    :height(1)
-                    :decorate{
-                        DecoFrame(),
-                        DecoAlign(-3,-4),
-                        DecoAlignedText(
-                            "Not unlocked",
-                            deco.fonts.labelfont,
-                            deco.textset(deco.colors.buttonborder),
-                            "center", 
-                            "center"
-                        )
-                    }
+                :width(1)
+                :height(1)
+                :decorate {
+                    DecoFrame(),
+                    DecoAlign(-3, -4),
+                    DecoAlignedText(
+                        "Not unlocked",
+                        deco.fonts.labelfont,
+                        deco.textset(deco.colors.buttonborder),
+                        "center",
+                        "center"
+                    )
+                }
                 :endUi()
                 :addTo(sdlext.getUiRoot())
                 :bringToTop()
@@ -135,10 +135,10 @@ local function squad_shown()
     lock_custom()
     mouse_down = root.mousedown
     function root:mousedown(mx, my, button)
-        if my > Boxes.hangar_select_big.y + Boxes.hangar_select_big.h - 277 
-        and my < Boxes.hangar_select_big.y + Boxes.hangar_select_big.h - 217
-        and mx > Boxes.hangar_select_big.x 
-        and mx < Boxes.hangar_select_big.x + Boxes.hangar_select_big.w then
+        if my > Boxes.hangar_select_big.y + Boxes.hangar_select_big.h - 277
+            and my < Boxes.hangar_select_big.y + Boxes.hangar_select_big.h - 217
+            and mx > Boxes.hangar_select_big.x
+            and mx < Boxes.hangar_select_big.x + Boxes.hangar_select_big.w then
             if mx < Boxes.hangar_select_big.x + 176 then
                 current_tab = "Prime"
             elseif mx < Boxes.hangar_select_big.x + 356 then

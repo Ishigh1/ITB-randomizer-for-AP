@@ -16,7 +16,8 @@ local function handle_effect(pawn, effects, skillEffect, method)
         local enemy = Board:GetPawn(start_location)
         if enemy:IsEnemy() and space == target_location then
             mod_loader.mods["randomizer"].pinnacle_a_1 = module.achievement1
-            skillEffect[method](skillEffect, "table.insert(mod_loader.mods[\"randomizer\"].pinnacle_a_1.pulled, " .. enemy:GetId() .. ")")
+            skillEffect[method](skillEffect,
+                "table.insert(mod_loader.mods[\"randomizer\"].pinnacle_a_1.pulled, " .. enemy:GetId() .. ")")
         end
     end
 end

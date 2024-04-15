@@ -16,64 +16,64 @@ return function(ap_link)
             :width(0.5)
             :height(0.5)
             :posCentered()
-            :decorate{DecoSolid(deco.colors.framebg) }
+            :decorate { DecoSolid(deco.colors.framebg) }
             :beginUi(server)
-                :height(0.15)
-                :width(0.95)
-                :pos(0.025, 0.025)
-                :format(function(self) self:setGroupOwner(self.parent) end)
-                :settooltip("Server adress", nil, true)
-                :decorate{
-                    DecoButton(),
-                    DecoInputField{
-                        font = font_title,
-                        textset = text_setttings_title,
-                        alignH = "center",
-                        alignV = "center",
-                    }
+            :height(0.15)
+            :width(0.95)
+            :pos(0.025, 0.025)
+            :format(function(self) self:setGroupOwner(self.parent) end)
+            :settooltip("Server adress", nil, true)
+            :decorate {
+                DecoButton(),
+                DecoInputField {
+                    font = font_title,
+                    textset = text_setttings_title,
+                    alignH = "center",
+                    alignV = "center",
                 }
+            }
             :endUi()
             :beginUi(slot)
-                :height(0.15)
-                :width(0.95)
-                :pos(0.025, 0.225)
-                :format(function(self) self:setGroupOwner(self.parent) end)
-                :settooltip("Slot name", nil, true)
-                :decorate{
-                    DecoButton(),
-                    DecoInputField{
-                        font = font_title,
-                        textset = text_setttings_title,
-                        alignH = "center",
-                        alignV = "center",
-                    }
+            :height(0.15)
+            :width(0.95)
+            :pos(0.025, 0.225)
+            :format(function(self) self:setGroupOwner(self.parent) end)
+            :settooltip("Slot name", nil, true)
+            :decorate {
+                DecoButton(),
+                DecoInputField {
+                    font = font_title,
+                    textset = text_setttings_title,
+                    alignH = "center",
+                    alignV = "center",
                 }
+            }
             :endUi()
             :beginUi(password)
-                :height(0.15)
-                :width(0.95)
-                :pos(0.025, 0.425)
-                :format(function(self) self:setGroupOwner(self.parent) end)
-                :settooltip("Password", nil, true)
-                :decorate{
-                    DecoButton(),
-                    DecoInputField{
-                        font = font_title,
-                        textset = text_setttings_title,
-                        alignH = "center",
-                        alignV = "center",
-                    }
+            :height(0.15)
+            :width(0.95)
+            :pos(0.025, 0.425)
+            :format(function(self) self:setGroupOwner(self.parent) end)
+            :settooltip("Password", nil, true)
+            :decorate {
+                DecoButton(),
+                DecoInputField {
+                    font = font_title,
+                    textset = text_setttings_title,
+                    alignH = "center",
+                    alignV = "center",
                 }
+            }
             :endUi()
             :beginUi(deathlink)
-                :height(0.15)
-                :width(0.45)
-                :pos(0.025, 0.625)
-                :decorate({
-                    DecoButton(),
-                    DecoCheckbox(),
-                    DecoCAlignedText("Deathlink", font_title, text_setttings_title)
-                })
+            :height(0.15)
+            :width(0.45)
+            :pos(0.025, 0.625)
+            :decorate({
+                DecoButton(),
+                DecoCheckbox(),
+                DecoCAlignedText("Deathlink", font_title, text_setttings_title)
+            })
             :endUi()
             --:beginUi(hint) -- Waiting for item scouting to exist
             --    :height(0.15)
@@ -86,13 +86,13 @@ return function(ap_link)
             --    })
             --:endUi()
             :beginUi(button)
-                :height(0.15)
-                :width(0.95)
-                :pos(0.025, 0.825)
-                :decorate{ 
-                    DecoButton(), 
-                    DecoCAlignedText("Connect", font_title, text_setttings_title)
-                }
+            :height(0.15)
+            :width(0.95)
+            :pos(0.025, 0.825)
+            :decorate {
+                DecoButton(),
+                DecoCAlignedText("Connect", font_title, text_setttings_title)
+            }
             :endUi()
             :addTo(sdlext.getUiRoot())
             :bringToTop()
@@ -116,17 +116,17 @@ return function(ap_link)
                 local connection_font = sdlext.font("fonts/JustinFont12Bold.ttf", 25)
 
                 ap_link.ui = Ui():height(0.5)
-                :width(0.5)
-                :posCentered()
-                :decorate{ 
-                    DecoCAlignedText("Connecting...", font_title, text_setttings_title)
-                }
-                :addTo(sdlext.getUiRoot())
+                    :width(0.5)
+                    :posCentered()
+                    :decorate {
+                        DecoCAlignedText("Connecting...", font_title, text_setttings_title)
+                    }
+                    :addTo(sdlext.getUiRoot())
                 return true
             end
 
             return false
         end
-    end 
+    end
     return ask_for_credentials
 end

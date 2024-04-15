@@ -16,12 +16,12 @@ local function register_armor(skillEffect, effects, f)
         if damage > 0 and damage < DAMAGE_ZERO then
             mod_loader.mods["randomizer"].archive_b_1 = module.achievement1
             local previous_space_damage = effects:index(i)
-            previous_space_damage.sScript = 
-            "local pawn = Board:GetPawn(Point(" .. space_damage.loc.x .. ", " .. space_damage.loc.y .. "))\n"
-            .. "if pawn ~= nil and pawn:IsPlayer() and pawn:IsArmor() and not pawn:IsAcid() and not pawn:IsShield() then\n"
-            .. "mod_loader.mods[\"randomizer\"].archive_b_1:addProgress(1)\n"
-            .. "end\n"  --The pawn sometimes isn't already there, so I check what's there just after the damage
-            .. (previous_space_damage.sScript or "")
+            previous_space_damage.sScript =
+                "local pawn = Board:GetPawn(Point(" .. space_damage.loc.x .. ", " .. space_damage.loc.y .. "))\n"
+                .. "if pawn ~= nil and pawn:IsPlayer() and pawn:IsArmor() and not pawn:IsAcid() and not pawn:IsShield() then\n"
+                .. "mod_loader.mods[\"randomizer\"].archive_b_1:addProgress(1)\n"
+                .. "end\n" --The pawn sometimes isn't already there, so I check what's there just after the damage
+                .. (previous_space_damage.sScript or "")
         end
     end
 end

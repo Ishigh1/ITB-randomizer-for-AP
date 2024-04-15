@@ -7,7 +7,7 @@ local module = {}
 local function check_drowned(mission, pawn)
     if module.achievement1:is_active() and pawn:IsEnemy() and pawn:GetPathProf() %
         3 == 0 and Board:GetTerrain(pawn:GetSpace()) == TERRAIN_WATER then
-            module.achievement1:addProgress(1)
+        module.achievement1:addProgress(1)
     end
 end
 
@@ -41,10 +41,12 @@ local function check_dash(mission, pawn)
         pawn:IsEnemy() and randomizer_helper.utils.is_player_turn() then
         local unit_position = module.ramming.pos
         local new_position = Board:GetPawn(module.ramming.id):GetSpace()
-        local unit_move_distance = math.abs(new_position.x - unit_position.x) + math.abs(new_position.y - unit_position.y)
+        local unit_move_distance = math.abs(new_position.x - unit_position.x) +
+            math.abs(new_position.y - unit_position.y)
         if unit_move_distance >= 4 then
             local enemy_position = pawn:GetSpace()
-            local enemy_distance = math.abs(enemy_position.x - unit_position.x) + math.abs(enemy_position.y - unit_position.y)
+            local enemy_distance = math.abs(enemy_position.x - unit_position.x) +
+                math.abs(enemy_position.y - unit_position.y)
             if enemy_distance > unit_move_distance then
                 module.achievement2:addProgress(true)
             end

@@ -22,7 +22,7 @@ function module.random_squad(index)
     local squad_name = vanilla_squad[1]
     local squad
     if module.slot_data == nil or module.slot_data[squad_name] == nil then
-        squad = {vanilla_squad[2], vanilla_squad[3], vanilla_squad[4]}
+        squad = { vanilla_squad[2], vanilla_squad[3], vanilla_squad[4] }
     else
         squad = module.slot_data[squad_name]
     end

@@ -127,14 +127,14 @@ local function on_room_info()
     local slot = module.slot
     local password = module.password
     local items_handling = tonumber("111", 2)
-    local tags = {"Lua-APClientPP"}
+    local tags = { "Lua-APClientPP" }
     if module.deathlink then
         table.insert(tags, "DeathLink")
     end
     if module.hint then
         table.insert(tags, "TextOnly")
     end
-    module.AP:ConnectSlot(slot, password, items_handling, tags, {0, 4, 1})
+    module.AP:ConnectSlot(slot, password, items_handling, tags, { 0, 4, 1 })
 end
 
 local function make_profile()
@@ -254,7 +254,7 @@ local function on_defeat(killer)
             cause = cause,
             source = module.slot
         }
-        module.AP:Bounce(data, nil, nil, {"DeathLink"})
+        module.AP:Bounce(data, nil, nil, { "DeathLink" })
     end
 end
 
@@ -278,7 +278,7 @@ local function on_gift_received(gift)
                 for i = 0.5, strength, 0.5 do
                     handled = true
                     local point = Point(math.random(1, 8), math.random(1, 8))
-                    local damage = SpaceDamage(point,0)
+                    local damage = SpaceDamage(point, 0)
                     damage.iShield = EFFECT_CREATE
                     Board:AddEffect(damage)
                 end

@@ -20,16 +20,16 @@ end
 
 function module.add_achievements()
     module.name_to_id = {}
-    local squad_names = 
+    local squad_names =
     {
-        "Archive_A", 
-        "Rust_A", 
-        "Pinnacle_A", 
-        "Detritus_A", 
-        "Archive_B", 
-        "Rust_B", 
+        "Archive_A",
+        "Rust_A",
+        "Pinnacle_A",
+        "Detritus_A",
+        "Archive_B",
+        "Rust_B",
         "Pinnacle_B",
-        "Detritus_B", 
+        "Detritus_B",
         "", -- secret doesn't have any achievement
         "Squad_Bomber"
     }
