@@ -137,7 +137,7 @@ local function on_room_info()
     if module.hint then
         table.insert(tags, "TextOnly")
     end
-    module.AP:ConnectSlot(slot, password, items_handling, tags, { 0, 4, 1 })
+    module.AP:ConnectSlot(slot, password, items_handling, tags, { 0, 4, 5 })
 end
 
 local function win()
