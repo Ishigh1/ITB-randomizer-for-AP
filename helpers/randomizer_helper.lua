@@ -80,7 +80,9 @@ local function register_game_changes()
         local overload = Game:GetResist()
         if overload ~= randomizer_helper.tracking.last_overload then
             if randomizer_helper.tracking.last_overload ~= nil then
-                randomizer_helper.events.on_overload_change:dispatch(overload - randomizer_helper.tracking.last_overload)
+                local overload_change = overload - randomizer_helper.tracking.last_overload
+                LOG("overload_change : " .. overload_change)
+                randomizer_helper.events.on_overload_change:dispatch(overload_change)
             end
             randomizer_helper.tracking.last_overload = overload
         end
