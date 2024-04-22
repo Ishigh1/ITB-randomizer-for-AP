@@ -171,6 +171,7 @@ local function on_slot_connected(slot_data)
         module.mod.profile_manager = module.profile_manager
 
         module.custom = slot_data.custom
+        module.required_achievements = slot_data.required_achievements
 
         module.queue = module.profile_manager.get_data("queued_items")
         if module.queue == nil then
