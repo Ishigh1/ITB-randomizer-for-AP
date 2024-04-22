@@ -1,7 +1,8 @@
 randomizer_helper = {
     events = {},
     tracking = {},
-    utils = {}
+    utils = {},
+    tools = {}
 }
 randomizer_helper.events.on_vek_action_change = Event()
 randomizer_helper.events.on_overload_change = Event()
