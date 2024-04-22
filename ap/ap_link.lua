@@ -346,12 +346,15 @@ local function keep_alive()
                     if location_name == "Victory" then
                         module.AP:StatusUpdate(module.AP.ClientStatus.GOAL)
                     else
-                        table.insert(locations, module.AP:get_location_id(location_name))
+                        local id = module.AP:get_location_id(location_name)
+                        LOG("Checking location " .. location_name .. " ID : " .. id)
+                        table.insert(locations, id)
                     end
                 end
-                module.AP:LocationChecks(locations)
 
-                module.queued_locations = {}
+                if (#locations > 0) then
+                    module.AP:LocationChecks(locations)
+                end
             end
         end
     end
