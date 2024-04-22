@@ -1,6 +1,6 @@
 local module = {}
 
--- ACHIEVEMENT 1
+-- ACHIEVEMENT 1 : Unbreakable
 -- Text : Have Mech Armor absorb 5 damage in a single battle
 -- Code : Have a mech with armored be attacked or be there at turn start with a Psion Tyrant alive
 
@@ -73,7 +73,7 @@ function module.initialize_achievement_1(achievement, mod)
     modApi.events.onMissionStart:subscribe(reset_armor)
 end
 
--- ACHIEVEMENT 2
+-- ACHIEVEMENT 2 : Unwitting Allies
 -- Text : Have 4 enemies die from enemy fire in a single battle
 -- Code : Have 4 enemies die while it's their turn to act
 
@@ -98,7 +98,7 @@ function module.initialize_achievement_2(achievement, mod)
     modApi.events.onMissionStart:subscribe(reset_team_kills)
 end
 
--- ACHIEVEMENT 3
+-- ACHIEVEMENT 3 : Mass Displacement
 -- Text : Push 3 enemies with a single attack
 -- Code : See 3 enemy moves following an attack
 

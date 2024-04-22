@@ -1,6 +1,6 @@
 local module = {}
 
--- ACHIEVEMENT 1
+-- ACHIEVEMENT 1 : Watery Grave
 -- Text : Drown 3 enemies in water in a single battle with the Rift Walkers squad
 -- Code : Kill 3 enemies that could drown when they are in water
 
@@ -23,7 +23,7 @@ function module.initialize_achievement_1(achievement, mod)
     modapiext.events.onPawnKilled:subscribe(check_drowned)
 end
 
--- ACHIEVEMENT 2
+-- ACHIEVEMENT 2 : Ramming Speed
 -- Text : Kill an enemy 5 or more tiles away with a Dash Punch with the Rift Walkers squad
 -- Code : Move 4+ tiles and kill an enemy further away
 
@@ -60,7 +60,7 @@ function module.initialize_achievement_2(achievement, mod)
     modapiext.events.onPawnKilled:subscribe(check_dash)
 end
 
--- ACHIEVEMENT 3
+-- ACHIEVEMENT 3 : Island Secure
 -- Text : Complete 1st Corporate Island with the Rift Walkers squad
 -- Code : Complete any Island with the Rift Walkers squad
 

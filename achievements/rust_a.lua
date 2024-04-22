@@ -1,6 +1,6 @@
 local module = {}
 
--- ACHIEVEMENT 1
+-- ACHIEVEMENT 1 : Overpower
 -- Text : Overpower your Power Grid twice by earning or buying Power when it is full
 -- Code : See overpower rise twice not due to AP
 
@@ -16,7 +16,7 @@ function module.initialize_achievement_1(achievement, mod)
     randomizer_helper.events.on_overload_change:subscribe(register_overpower)
 end
 
--- ACHIEVEMENT 2
+-- ACHIEVEMENT 2 : Stormy Weather
 -- Text : Deal 12 damage with Electric Smoke in a single battle
 -- Code : See 12 damages in ATTACK_ORDER_LIGHTNING. Also counts explosions happening at that time
 
@@ -39,7 +39,7 @@ function module.initialize_achievement_2(achievement, mod)
     modApi.events.onMissionStart:subscribe(reset_smoke)
 end
 
--- ACHIEVEMENT 3
+-- ACHIEVEMENT 3 : Perfect Battle
 -- Text : Take no Mech or Building Damage in a single battle (Repaired damage is still damage)
 -- Code : ^
 

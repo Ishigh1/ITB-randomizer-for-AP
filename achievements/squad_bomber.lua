@@ -1,6 +1,6 @@
 local module = {}
 
--- ACHIEVEMENT 1
+-- ACHIEVEMENT 1 : Hold the Door
 -- Text : Block 30 Emerging Vek by the end of Island 2.
 -- Code : ^
 
@@ -33,7 +33,7 @@ function module.initialize_achievement_1(achievement, mod)
     modApi.events.onPostStartGame:subscribe(reset_block)
 end
 
--- ACHIEVEMENT 2
+-- ACHIEVEMENT 2 : No Survivors
 -- Text : Have 7 units (any team) die in a single turn.
 -- Code : ^
 
@@ -56,7 +56,7 @@ function module.initialize_achievement_2(achievement, mod)
     GameEvents.onTurnStart:subscribe(reset_kills)
 end
 
--- ACHIEVEMENT 3
+-- ACHIEVEMENT 3 : Powered Blast
 -- Text : Pierce a Walking Bomb with the AP Cannon to kill an Enemy.
 -- Code : Kill an enemy by attacking through something you summoned this turn
 

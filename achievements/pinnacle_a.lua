@@ -1,6 +1,6 @@
 local module = {}
 
--- ACHIEVEMENT 1
+-- ACHIEVEMENT 1 : Get Over Here
 -- Text : Kill an enemy by pulling it into yourself
 -- Code : ^
 
@@ -56,7 +56,7 @@ function module.initialize_achievement_1(achievement, mod)
     randomizer_helper.events.on_vek_action_change:subscribe(reset_pull)
 end
 
--- ACHIEVEMENT 2
+-- ACHIEVEMENT 2 : Glittering C-Beam
 -- Text : Hit 4 enemies with a single laser
 -- Code : Have 4 enemies in your attack area with a laser weapon
 local function handle_effect(effects, skillEffect, method)
@@ -92,7 +92,7 @@ function module.initialize_achievement_2(achievement, mod)
     modapiext.events.onSkillBuild:subscribe(register_attack)
 end
 
--- ACHIEVEMENT 3
+-- ACHIEVEMENT 3 : Shield Mastery
 -- Text : Block damage with a Shield 4 times in a single battle
 -- Code : Have a mech or building lose shield 4 times
 

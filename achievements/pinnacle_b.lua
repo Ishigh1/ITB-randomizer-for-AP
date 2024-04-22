@@ -1,6 +1,6 @@
 local module = {}
 
--- ACHIEVEMENT 1
+-- ACHIEVEMENT 1 : Cryo-Expert
 -- Text : Shoot the Cryo-Launcher 4 times in a single battle
 -- Code : ^
 
@@ -23,7 +23,7 @@ function module.initialize_achievement_1(achievement, mod)
     modApi.events.onMissionStart:subscribe(reset_cryo)
 end
 
--- ACHIEVEMENT 2
+-- ACHIEVEMENT 2 : Trick Shot
 -- Text : Kill 3 enemies with a single attack of the Janus Cannon
 -- Code : Kill 3 enemies after using any weapon
 
@@ -49,7 +49,7 @@ function module.initialize_achievement_2(achievement, mod)
     modapiext.events.onPawnKilled:subscribe(kill_janus)
 end
 
--- ACHIEVEMENT 3
+-- ACHIEVEMENT 3 : Pacifist
 -- Text : Kill fewer than 3 enemies in a single battle
 -- Code : ^
 

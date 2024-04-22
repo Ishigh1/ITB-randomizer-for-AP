@@ -1,6 +1,6 @@
 local module = {}
 
--- ACHIEVEMENT 1
+-- ACHIEVEMENT 1 : Healing
 -- Text : Heal 10 Mech Health in a single battle
 -- Code : Restore 10 HP to player units during a battle
 
@@ -22,7 +22,7 @@ function module.initialize_achievement_1(achievement, mod)
     modApi.events.onMissionStart:subscribe(reset_healing)
 end
 
--- ACHIEVEMENT 2
+-- ACHIEVEMENT 2 : Immortal
 -- Text : Finish 4 Corporate Islands without a Mech being destroyed at the end of a battle
 -- Code : Finish 4 Corporate Islands without an ally being destroyed
 
@@ -53,14 +53,14 @@ local function gain_immortality(island)
 end
 
 function module.initialize_achievement_2(achievement, mod)
-    achievement.objective = true
+    achievement.objective = 4
 
     modapiext.events.onPawnKilled:subscribe(check_immortality)
     modApi.events.onPostStartGame:subscribe(regain_immortality)
     modApi.events.onIslandLeft:subscribe(gain_immortality)
 end
 
--- ACHIEVEMENT 3
+-- ACHIEVEMENT 3 : Overkill
 -- Text : Deal 8 damage to a unit with a single attack
 -- Code : Make so that any unit loses 8 hp in a single skill
 
@@ -76,12 +76,14 @@ local function handle_effect(effects, skillEffect, method)
         local pawn = Board:GetPawn(loc)
         if pawn ~= nil and pawn:IsEnemy() then
             local damage = space_damage.iDamage
-            if pawn:IsAcid() then
-                damage = damage * 2
-            end
+            if damage > 0 and damage < DAMAGE_ZERO then
+                if pawn:IsAcid() then
+                    damage = damage * 2
+                end
 
-            local pawn_id = pawn:GetId()
-            total_damage[pawn_id] = damage + (total_damage[pawn_id] or 0)
+                local pawn_id = pawn:GetId()
+                total_damage[pawn_id] = damage + (total_damage[pawn_id] or 0)
+            end
         end
     end
 

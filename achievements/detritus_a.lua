@@ -1,6 +1,6 @@
 local module = {}
 
--- ACHIEVEMENT 1
+-- ACHIEVEMENT 1 : Blitzkrieg
 -- Text : Have the Chain Whip attack chain through 10 tiles
 -- Code : Have any weapon affect 10 tiles
 
@@ -40,7 +40,7 @@ function module.initialize_achievement_1(achievement, mod)
     modapiext.events.onSkillBuild:subscribe(register_attack)
 end
 
--- ACHIEVEMENT 2
+-- ACHIEVEMENT 2 : Lightning War
 -- Text : Finish the first 2 Corporate Islands in under 30 minutes
 -- Code : Beat the second island less than 30 minutes after starting
 
@@ -63,7 +63,7 @@ function module.initialize_achievement_2(achievement, mod)
     achievement.objective = 2
 end
 
--- ACHIEVEMENT 3
+-- ACHIEVEMENT 3 : Hold the Line
 -- Text : Block 4 emerging Vek in a single turn
 -- Code : ^
 

@@ -1,6 +1,6 @@
 local module = {}
 
--- ACHIEVEMENT 1
+-- ACHIEVEMENT 1 : Quantum Entanglement
 -- Text : Teleport a unit 4 tiles away
 -- Code : Use Teleporter on an unit 4 tiles away
 
@@ -16,7 +16,7 @@ function module.initialize_achievement_1(achievement, mod)
     randomizer_helper.events.on_attack:subscribe(check_teleport)
 end
 
--- ACHIEVEMENT 2
+-- ACHIEVEMENT 2 : Scorched Earth
 -- Text : End a battle with 12 tiles on Fire
 -- Code : Just have 12 tiles lit at the same time
 
@@ -43,7 +43,7 @@ function module.initialize_achievement_2(achievement, mod)
     modApi.events.onMissionStart:subscribe(reset_fire)
 end
 
--- ACHIEVEMENT 3
+-- ACHIEVEMENT 3 : This is Fine
 -- Text : Have 5 enemies on Fire simultaneously
 -- Code : ^
 local function pawn_fire(mission, pawn, isFire)
