@@ -227,7 +227,7 @@ local function on_location_checked(locations)
     for _, location_name in ipairs(locations) do
         local achievement = modApi.achievements:get("randomizer", name)
         achievement:completeProgress()
-        module.queued_locations[module.AP:get_location_id(location_name)] = nil
+        module.queued_locations[location_name] = nil
     end
 end
 
