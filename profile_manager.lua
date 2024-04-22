@@ -32,6 +32,7 @@ return function(ap_link, seed_name, slot)
     end
 
     function module.set_achievement_data(achievement, name, value)
+        LOG("Saving data for achievement " .. achievement.id .. "|" .. name .. " : " .. randomizer_helper.tools.tprint(value))
         local achievement_data = current_profile[achievement.id]
         if achievement_data == nil then
             achievement_data = {}
@@ -49,9 +50,9 @@ return function(ap_link, seed_name, slot)
         else
             function achievement:is_active()
                 return GAME ~= nil and not self:isComplete() and (
-                    GAME.additionalSquadData.squad == team               --When outside of battle
+                    GAME.additionalSquadData.squad == team               -- When outside of battle
                     or (GAME.additionalSquadData.squad == self.squad and -- When in battle
-                        (Board == nil or                                 --Just exiting a battle
+                        (Board == nil or                                 -- Just exiting a battle
                             not modapiext.weapon:isTipImage()))          -- Avoid counting weapon preview
                 )
             end
