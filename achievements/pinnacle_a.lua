@@ -80,16 +80,16 @@ local function handle_effect(effects, skillEffect, method)
 end
 
 local function register_attack(mission, pawn, weaponId, p1, p2, skillEffect)
-    if module.achievement2:is_active() then
+    if module.achievement2:is_active() and pawn:IsPlayer() then
         handle_effect(skillEffect.effect, skillEffect, "AddScript")
         handle_effect(skillEffect.q_effect, skillEffect, "AddQueuedScript")
     end
 end
 
 function module.initialize_achievement_2(achievement, mod)
-    achievement.objective = true
-
     modapiext.events.onSkillBuild:subscribe(register_attack)
+
+    achievement.objective = true
 end
 
 -- ACHIEVEMENT 3 : Shield Mastery
