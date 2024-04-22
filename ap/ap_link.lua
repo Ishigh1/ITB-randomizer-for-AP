@@ -147,15 +147,15 @@ local function make_profile()
         modApi:copyFile(module.mod.scriptPath .. "data/profile.lua",
             GetSavedataLocation() .. "profile_" .. Settings.last_profile .. "/profile.lua")
     end
+local function win()
+    module.queued_locations["Victory"] = true
+    module.profile_manager.set_data("victory", true)
+    module.frame = 0
 end
 
-local function win()
-    if module.hint then -- Waiting for item scouting to exist
-        -- if GetDifficulty()
-    else
-        module.queued_locations["Victory"] = true
-        module.profile_manager.set_data("victory", true)
-        module.frame = 0
+local function check_win()
+    if #module.AP.checked_locations >= module.required_achievements then
+        win()
     end
 end
 
@@ -377,7 +377,7 @@ function module.init(mod)
 
     local ap_ui = require(mod.scriptPath .. "ap/ap_ui")(module)
     module.ap_dll = package.loadlib(mod.resourcePath .. "lib/lua-apclientpp.dll", "luaopen_apclientpp")()
-    modApi.events.onGameVictory:subscribe(win)
+    modApi.events.onGameVictory:subscribe(check_win)
     modApi.events.onMainMenuEntered:subscribe(ap_ui)
     modApi.events.onFrameDrawn:subscribe(keep_alive)
     modApi.events.onMissionStart:subscribe(check_giftbox)
