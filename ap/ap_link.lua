@@ -2,7 +2,6 @@ local module = {}
 
 local function reset_unlocked_content()
     module.unlocked_items = {
-        ["Rift Walkers"] = 1,
         count = 0
     }
     module.profile_manager.set_data("unlocked_items", module.unlocked_items)
