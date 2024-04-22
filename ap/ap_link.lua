@@ -203,13 +203,23 @@ local function on_slot_connected(slot_data)
 end
 
 local function on_items_received(items)
-    local count = 0
-    for _, item in ipairs(items) do
-        if item.index == 0 then
-            item.index = count
-            count = count + 1
+    if module.AP:is_data_package_valid() then
+        local count = 0
+        for _, item in ipairs(items) do
+            if item.index == 0 then
+                item.index = count
+                count = count + 1
+            end
+            add_to_unlocked(item)
         end
-        add_to_unlocked(item)
+    else
+        if module.waiting_items == nil then
+            module.waiting_items = items
+        else
+            for _, item in ipairs(items) do
+                table.insert(module.waiting_items, item)
+            end
+        end
     end
 end
 
@@ -231,6 +241,12 @@ local function on_bounced(bounce)
             module.handle_bonus("DeathLink")
             return
         end
+    end
+end
+
+local function on_datapackage(data_package)
+    if module.waiting_items ~= nil then
+        on_items_received(module.waiting_items)
     end
 end
 
@@ -325,6 +341,7 @@ local function initialize_socket()
     module.AP:set_items_received_handler(on_items_received)
     module.AP:set_location_checked_handler(on_location_checked)
     module.AP:set_bounced_handler(on_bounced)
+    module.AP:set_data_package_changed_handler(on_datapackage)
 
     if module.deathlink then
         randomizer_helper.events.on_game_lost:subscribe(on_defeat)
@@ -333,13 +350,13 @@ end
 
 local function keep_alive()
     if not module.initializing then
-        module.frame = module.frame + 1
         if module.AP == nil then
             initialize_socket()
         else
+            module.frame = module.frame + 1
             module.AP:poll()
 
-            if not module.profile_initializing and module.frame % 60 == 0 then
+            if not module.profile_initializing and module.frame % 60 == 0 and module.AP:is_data_package_valid() then
                 module.squad_randomizer.edit_squads()
 
                 local locations = {}
