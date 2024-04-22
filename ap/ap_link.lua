@@ -191,6 +191,7 @@ local function on_slot_connected(slot_data)
         local achievements = require(module.mod.scriptPath .. "achievements/global")
         achievements.initialize(module.mod)
         achievements.add_achievements()
+        LOG("Added achievements")
 
         module.gift_API:open_giftbox(true, {})
     end
@@ -225,7 +226,8 @@ end
 
 local function on_location_checked(locations)
     for _, location_name in ipairs(locations) do
-        local achievement = modApi.achievements:get("randomizer", name)
+        LOG("Checked location " .. location_name)
+        local achievement = modApi.achievements:get("randomizer", location_name)
         achievement:completeProgress()
         module.queued_locations[location_name] = nil
     end
