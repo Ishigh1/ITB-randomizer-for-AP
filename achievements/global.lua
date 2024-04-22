@@ -31,7 +31,8 @@ function module.add_achievements()
         "Pinnacle_B",
         "Detritus_B",
         "", -- secret doesn't have any achievement
-        "Squad_Bomber"
+        "Squad_Bomber",
+        "Squad_Spiders"
     }
 
     local image_prefix = "img/achievements/"
