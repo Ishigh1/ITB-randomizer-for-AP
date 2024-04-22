@@ -140,13 +140,6 @@ local function on_room_info()
     module.AP:ConnectSlot(slot, password, items_handling, tags, { 0, 4, 1 })
 end
 
-local function make_profile()
-    local file = Directory.savedata():directory("profile_" .. Settings.last_profile):file("profile.lua")
-    if not file:exists() then
-        file:make_directories()
-        modApi:copyFile(module.mod.scriptPath .. "data/profile.lua",
-            GetSavedataLocation() .. "profile_" .. Settings.last_profile .. "/profile.lua")
-    end
 local function win()
     module.queued_locations["Victory"] = true
     module.profile_manager.set_data("victory", true)
