@@ -133,3 +133,35 @@ end
 function randomizer_helper.utils.is_player_turn()
     return Game:GetTeamTurn() == TEAM_PLAYER and randomizer_helper.tracking.current_action == ATTACK_ORDER_IDLE
 end
+
+function randomizer_helper.utils.is_enemy_turn()
+    return Game:GetTeamTurn() == TEAM_ENEMY and randomizer_helper.tracking.current_action == ATTACK_ORDER_IDLE
+end
+
+function randomizer_helper.tools.tprint(value, indent)
+    if not indent then indent = 0 end
+    local toprint = ""
+    indent = indent + 2
+    if (type(value) == "number") then
+        toprint = toprint .. value
+    elseif (type(value) == "string") then
+        toprint = toprint .. "\"" .. value .. "\""
+    elseif (type(value) == "table") then
+        toprint = toprint .. string.rep(" ", indent) .. "{\n"
+        for k, v in pairs(value) do
+            toprint = toprint .. string.rep(" ", indent)
+            if (type(k) == "number") then
+                toprint = toprint .. "[" .. k .. "] = "
+            elseif (type(k) == "string") then
+                toprint = toprint .. k .. "= "
+            end
+            toprint = toprint .. randomizer_helper.tools.tprint(v, indent + 2) .. ",\n"
+        end
+        toprint = toprint .. string.rep(" ", indent - 2) .. "}"
+    elseif (type(value) == "function") then
+        error("function should never be an option here")
+    else
+        toprint = toprint .. "\"" .. tostring(value) .. "\""
+    end
+    return toprint
+end

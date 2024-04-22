@@ -79,8 +79,7 @@ end
 
 local function check_team_kill(mission, pawn)
     if module.achievement2:is_active() and pawn:IsEnemy() and
-        (randomizer_helper.tracking.current_action == ATTACK_ORDER_TENTACLES or randomizer_helper.tracking.current_action ==
-            ATTACK_ORDER_IDLE) then
+        (randomizer_helper.tracking.current_action == ATTACK_ORDER_TENTACLES or randomizer_helper.utils.is_enemy_turn()) then
         module.achievement2:addProgress(1)
     end
 end
