@@ -115,8 +115,9 @@ local function add_to_unlocked(item)
 
     if previous_value then
         module.unlocked_items[item_name] = previous_value + 1
+    else
+        module.unlocked_items[item_name] = 1
     end
-    module.unlocked_items[item_name] = 1
     module.unlocked_items.count = module.unlocked_items.count + 1
     module.profile_manager.set_data("unlocked_items", module.unlocked_items)
     module.handle_bonus(item_name)
