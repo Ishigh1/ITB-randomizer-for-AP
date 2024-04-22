@@ -216,6 +216,8 @@ end
 
 local function on_location_checked(locations)
     for _, location_name in ipairs(locations) do
+        local achievement = modApi.achievements:get("randomizer", name)
+        achievement:completeProgress()
         module.queued_locations[module.AP:get_location_id(location_name)] = nil
     end
 end
@@ -383,8 +385,10 @@ function module.init(mod)
 end
 
 function module.complete_location(location_name)
-    module.queued_locations[location_name] = true
-    module.frame = 0
+    if not list_contains(module.AP.checked_locations, module.AP:get_location_id(location_name)) then
+        module.queued_locations[location_name] = true
+        module.frame = 0
+    end
 end
 
 local old_get_text = GetText
