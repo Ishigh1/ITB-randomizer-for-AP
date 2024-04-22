@@ -100,6 +100,7 @@ function module.handle_bonus(item_name)
 end
 
 local function add_to_unlocked(item)
+    LOG("index : " .. item.index)
     if (item.index < module.unlocked_items.count) then
         return true
     end
@@ -119,6 +120,7 @@ local function add_to_unlocked(item)
         module.unlocked_items[item_name] = 1
     end
     module.unlocked_items.count = module.unlocked_items.count + 1
+    LOG("Current items : " .. randomizer_helper.tools.tprint(module.unlocked_items))
     module.profile_manager.set_data("unlocked_items", module.unlocked_items)
     module.handle_bonus(item_name)
     return true
