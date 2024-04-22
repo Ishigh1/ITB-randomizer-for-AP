@@ -3,7 +3,7 @@ local module = {}
 local function reset_unlocked_content()
     module.unlocked_items = {
         ["Rift Walkers"] = 1,
-        count = 1
+        count = 0
     }
     module.profile_manager.set_data("unlocked_items", module.unlocked_items)
 end
@@ -210,7 +210,7 @@ local function on_slot_connected(slot_data)
 end
 
 local function on_items_received(items)
-    local count = 1
+    local count = 0
     for _, item in ipairs(items) do
         if item.index == 0 then
             item.index = count
