@@ -225,11 +225,22 @@ local function on_items_received(items)
 end
 
 local function on_location_checked(locations)
-    for _, location_name in ipairs(locations) do
-        LOG("Checked location " .. location_name)
-        local achievement = modApi.achievements:get("randomizer", location_name)
-        achievement:completeProgress()
-        module.queued_locations[location_name] = nil
+    if module.AP:is_data_package_valid() then
+        for _, location_id in ipairs(locations) do
+            local location_name = module.AP:get_location_name(location_id)
+            LOG("Checked location " .. location_name)
+            local achievement = modApi.achievements:get("randomizer", location_name)
+            achievement:completeProgress()
+            module.queued_locations[location_name] = nil
+        end
+    else
+        if module.waiting_locations == nil then
+            module.waiting_locations = locations
+        else
+            for _, location in ipairs(locations) do
+                table.insert(module.waiting_locations, location)
+            end
+        end
     end
 end
 
@@ -249,6 +260,9 @@ end
 local function on_datapackage(data_package)
     if module.waiting_items ~= nil then
         on_items_received(module.waiting_items)
+    end
+    if module.waiting_locations ~= nil then
+        on_location_checked(module.waiting_locations)
     end
 end
 
