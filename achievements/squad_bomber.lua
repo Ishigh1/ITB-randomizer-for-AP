@@ -11,7 +11,7 @@ local function notice_block()
 end
 
 local function fail_block(island)
-    if island >= 2 and module.achievement1:is_active() and not module.achievement1:get_data("failed_block") then
+    if module.achievement1:is_active() and island >= 2 and not module.achievement1:get_data("failed_block") then
         module.achievement1.text = GetVanillaText("Ach_Squad_Bomber_Text" .. "\n" .. "Failed")
         module.achievement1:set_data("failed_block", true)
     end
@@ -75,7 +75,7 @@ local function handle_effect(pawn, effects, skillEffect, method)
         local space_damage = effects:index(i)
         local loc = space_damage.loc
         local target = Board:GetPawn(loc)
-        if target ~= nil and loc ~= base_space then
+        if target ~= nil then
             for _, id in pairs(new_units) do
                 if (target:GetId() == id) then
                     if (loc.x == base_space.x) then
@@ -107,16 +107,16 @@ local function handle_effect(pawn, effects, skillEffect, method)
             if (loc.x == base_space.x) then
                 local yDiff = base_space.y - loc.y
                 if yDiff > 0 and yDiff > up then
-                    table.insert(module.achievement3.pulled, target:GetId())
+                    table.insert(module.achievement3.pierce_victims, target:GetId())
                 elseif yDiff < 0 and -yDiff > down then
-                    table.insert(module.achievement3.pulled, target:GetId())
+                    table.insert(module.achievement3.pierce_victims, target:GetId())
                 end
             elseif (loc.y == base_space.y) then
                 local xDiff = base_space.x - loc.x
-                if xDiff > 0 and xDiff < left then
-                    table.insert(module.achievement3.pulled, target:GetId())
-                elseif xDiff < 0 and -xDiff < right then
-                    table.insert(module.achievement3.pulled, target:GetId())
+                if xDiff > 0 and xDiff > left then
+                    table.insert(module.achievement3.pierce_victims, target:GetId())
+                elseif xDiff < 0 and -xDiff > right then
+                    table.insert(module.achievement3.pierce_victims, target:GetId())
                 end
             end
         end
@@ -125,7 +125,7 @@ end
 
 local function register_attack(mission, pawn, weaponId, p1, p2, skillEffect)
     if module.achievement3:is_active() and pawn ~= nil and pawn:IsPlayer() then
-        module.achievement3.pulled = {}
+        module.achievement3.pierce_victims = {}
         handle_effect(pawn, skillEffect.effect, skillEffect, "AddScript")
         handle_effect(pawn, skillEffect.q_effect, skillEffect, "AddQueuedScript")
     end
@@ -134,7 +134,7 @@ end
 local function check_pierce(mission, pawn)
     if module.achievement3:is_active() and randomizer_helper.utils.is_player_turn() then
         local id = pawn:GetId()
-        for _, v in pairs(module.achievement3.pulled) do
+        for _, v in pairs(module.achievement3.pierce_victims) do
             if v == id then
                 module.achievement3:addProgress(true)
                 return
@@ -144,17 +144,19 @@ local function check_pierce(mission, pawn)
 end
 
 local function reset_pierce(action)
-    if action == ATTACK_ORDER_IDLE and module.achievement3:is_active() then
-        module.achievement3.pulled = {}
+    if module.achievement3:is_active() and action == ATTACK_ORDER_IDLE then
+        module.achievement3.pierce_victims = {}
         module.achievement3:set_data("new_units", {})
     end
 end
 
 local function new_unit(mission, pawn)
-    local new_units = module.achievement3.get_data("new_units") or {}
-    local id = pawn:GetId()
-    table.insert(new_units, id)
-    local new_units = module.achievement3.set_data("new_units", new_unit)
+    if module.achievement3:is_active() and pawn:IsPlayer() then
+        local new_units = module.achievement3:get_data("new_units") or {}
+        local id = pawn:GetId()
+        table.insert(new_units, id)
+        module.achievement3:set_data("new_units", new_units)
+    end
 end
 
 function module.initialize_achievement_3(achievement, mod)
