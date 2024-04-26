@@ -1,36 +1,25 @@
 local module = {}
 
--- No need to care about the profile manager here since you shouldn't change profile in the middle of a mission
-
 local function reset_grid_appliance()
-    modApi:writeProfileData("applied_grid", false)
+    module.mod.profile_manager.set_data("applied_grid", randomizer_helper.memedit.get_seed())
+    randomizer_helper.memedit.set_base_def((module.ap_link.unlocked_items["3 Starting Grid Defense"] or 0) * 3)
+    randomizer_helper.memedit.set_power((module.ap_link.unlocked_items["2 Starting Grid Power"] or 0) * 2 + 1)
+    module.ap_link.handle_bonus("New Game")
+end
+local function apply_grid_bonuses()
+    if module.mod.profile_manager.get_data("applied_grid") ~= randomizer_helper.memedit.get_seed() then
+        reset_grid_appliance()
+    else
+        randomizer_helper.memedit.set_base_def((module.ap_link.unlocked_items["3 Starting Grid Defense"] or 0) * 3)
+        module.ap_link.handle_bonus()
+    end
 end
 
 local function get_starting_bonuses()
-    if (modApi:readProfileData("applied_grid")) then
-        module.ap_link.in_mission = true
-        return
-    end
-
-    module.ap_link.handle_bonus("New Game")
-
-    local value = (module.ap_link.unlocked_items["2 Starting Grid Power"] or 0) * 2 - 4
-    for i, mission in ipairs(GAME.Missions) do
-        mission.PowerStart = 5 + value
-    end
-
-    GetGame():ModifyPowerGrid(value)
-
-    LOG("Starting grid defense items : " .. (module.ap_link.unlocked_items["3 Starting Grid Defense"] or 0))
-    module.def_malus = (module.ap_link.unlocked_items["3 Starting Grid Defense"] or 0) * 3 - 15
-    randomizer_helper.tracking.last_overload = module.def_malus
-    Game:SetResist(module.def_malus)
-
-    modApi:writeProfileData("applied_grid", true)
-
     module.ap_link.in_mission = true
     module.ap_link.handle_bonus()
 end
+
 
 local function stop_mission()
     module.ap_link.in_mission = false
@@ -40,6 +29,7 @@ function module.initialize(mod)
     module.mod = mod
     module.ap_link = mod.ap_link
     modApi.events.onPostStartGame:subscribe(reset_grid_appliance)
+    modApi.events.onPostLoadGame:subscribe(apply_grid_bonuses)
     modApi.events.onMissionStart:subscribe(get_starting_bonuses)
     modApi.events.onMissionEnd:subscribe(stop_mission)
 end

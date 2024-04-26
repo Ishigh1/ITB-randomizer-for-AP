@@ -80,7 +80,7 @@ local function handle_effect(effects, skillEffect, method)
 end
 
 local function register_attack(mission, pawn, weaponId, p1, p2, skillEffect)
-    if module.achievement2:is_active() and pawn:IsPlayer() then
+    if module.achievement2:is_active() and pawn and pawn:IsPlayer() then
         handle_effect(skillEffect.effect, skillEffect, "AddScript")
         handle_effect(skillEffect.q_effect, skillEffect, "AddQueuedScript")
     end

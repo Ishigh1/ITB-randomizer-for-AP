@@ -6,7 +6,7 @@ local module = {}
 
 local function register_overpower(overpower)
     if module.achievement1:is_active() then
-        module.achievement1:addProgress(overpower)
+        module.achievement1:setProgress(Game:GetResist() / 2)
     end
 end
 

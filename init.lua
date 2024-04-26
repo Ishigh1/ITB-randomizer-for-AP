@@ -3,6 +3,7 @@ end
 
 local function init(self, options)
     require(self.scriptPath .. "helpers/randomizer_helper")
+    randomizer_helper.memedit = require(self.scriptPath .. "helpers/custom_memedit")
     require(self.scriptPath .. "helpers/GameEvents")
 
     self.ap_link = require(self.scriptPath .. "ap/ap_link")

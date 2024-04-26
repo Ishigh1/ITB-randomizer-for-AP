@@ -20,55 +20,45 @@ function module.handle_bonus(item_name)
     local changed = false
     if item_name ~= nil then
         if item_name == "3 Starting Grid Defense" then
-            module.queue.starting_defense = module.queue.starting_defense + 3
-            changed = true
+            if Game ~= nil then
+                randomizer_helper.memedit.set_base_def((module.ap_link.unlocked_items["3 Starting Grid Defense"] or 0) *
+                    3)
+            end
         elseif item_name == "2 Starting Grid Power" then
-            module.queue.starting_power = module.queue.starting_power + 2
-            changed = true
+            if Game ~= nil then
+                randomizer_helper.memedit.add_power(2)
+            end
         elseif item_name == "1 Grid Power" then
             module.queue.power = module.queue.power + 1
-            changed = true
-        elseif item_name == "-1 Grid Power" then
-            module.queue.power = module.queue.power - 1
             changed = true
         elseif item_name == "Boss Enemy" then
             module.queue.boss = module.queue.boss + 1
             changed = true
         elseif item_name == "New Game" then -- Dummy item to not rewrite the logic
-            module.queue.starting_defense = 0
-            module.queue.starting_power = 0
-            module.queue.dying = false
             changed = true
         elseif item_name == "New Save" then -- Dummy item to not rewrite the logic
             module.queue = {}
-            module.queue.starting_defense = 0
-            module.queue.starting_power = 0
-            module.queue.defense = 0
             module.queue.power = 0
             module.queue.boss = 0
             changed = true
         elseif item_name == "DeathLink" then
             if Game ~= nil then
-                module.queue.dying = true
-                changed = true
+                randomizer_helper.memedit.set_power(0)
             end
+        end
+    end
+
+    if Game ~= nil then
+        if (module.queue.power) then
+            randomizer_helper.memedit.add_power(module.queue.power)
+            module.queue.power = 0
+            module.changed = true
         end
     end
 
     if modApi:getGameState() == "Mission" then
         if module.queue.dying then
             Game:ModifyPowerGrid(-100)
-        end
-
-        if module.queue.starting_defense ~= 0 or module.queue.defense ~= 0 then
-            local resist = Game:GetResist()
-            resist = resist + module.queue.starting_defense + module.queue.defense
-            Game:SetResist(resist)
-            randomizer_helper.tracking.last_overload = resist
-
-            module.queue.starting_defense = 0
-            module.queue.defense = 0
-            changed = true
         end
 
         if module.queue.starting_power ~= 0 or module.queue.power ~= 0 then
