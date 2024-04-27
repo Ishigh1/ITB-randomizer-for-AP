@@ -21,8 +21,7 @@ function module.handle_bonus(item_name)
     if item_name ~= nil then
         if item_name == "3 Starting Grid Defense" then
             if Game ~= nil then
-                randomizer_helper.memedit.set_base_def((module.ap_link.unlocked_items["3 Starting Grid Defense"] or 0) *
-                    3)
+                randomizer_helper.memedit.set_base_def((module.unlocked_items["3 Starting Grid Defense"] or 0) * 3)
             end
         elseif item_name == "2 Starting Grid Power" then
             if Game ~= nil then
