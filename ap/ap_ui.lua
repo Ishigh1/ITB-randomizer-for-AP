@@ -113,9 +113,8 @@ return function(ap_link)
                 root:detach()
                 ap_link.initializing = false
 
-                local connection_font = sdlext.font("fonts/JustinFont12Bold.ttf", 25)
-
-                ap_link.ui = Ui():height(0.5)
+                ap_link.ui = Ui()
+                    :height(0.5)
                     :width(0.5)
                     :posCentered()
                     :decorate {

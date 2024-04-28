@@ -183,6 +183,9 @@ local function on_slot_connected(slot_data)
         LOG("Added achievements")
 
         module.gift_API:open_giftbox(true, {})
+
+        module.energylink_shop = require(module.mod.scriptPath .. "ap/energylink_shop")
+        module.energylink_shop:init(module)
     end
     module.ui:detach()
     module.ui = nil
@@ -252,6 +255,34 @@ local function on_datapackage(data_package)
     end
     if module.waiting_locations ~= nil then
         on_location_checked(module.waiting_locations)
+    end
+end
+
+local function on_retrieved(map, keys, extra_data)
+    if extra_data.id == module.id then
+        if extra_data.action == "get rep" then
+            module.energylink_shop:update_energylink(map[module.energylink_shop.energylink_name])
+        end
+    end
+end
+
+local function on_set_reply(message)
+    if message.id == module.id then
+        if message.action == "take rep" then
+            local change = message.original_value - message.value
+            if change == module.energylink_shop.price and Game ~= nil then
+                local rep = randomizer_helper.memedit.get_rep()
+                randomizer_helper.memedit.set_rep(rep + 1)
+                module.energylink_shop:update_energylink(message.value)
+            else
+                module.AP:Set(module.energylink_shop.energylink_name, 0, false, {
+                    { "add", change }
+                })
+                module.energylink_shop:update_energylink(change)
+            end
+        elseif message.action == "give rep" then
+            module.energylink_shop:update_energylink(message.value)
+        end
     end
 end
 
@@ -340,6 +371,7 @@ local function initialize_socket()
     module.gift_API:init(module.AP)
     module.gift_API:set_gift_notification_handler(on_gift_notification)
     module.gift_API:set_gift_handler(on_gift_received)
+    module.id = module.gift_API:generate_GUID("")
 
     module.AP:set_room_info_handler(on_room_info)
     module.AP:set_slot_connected_handler(on_slot_connected)
@@ -347,6 +379,8 @@ local function initialize_socket()
     module.AP:set_location_checked_handler(on_location_checked)
     module.AP:set_bounced_handler(on_bounced)
     module.AP:set_data_package_changed_handler(on_datapackage)
+    module.AP:set_retrieved_handler(on_retrieved)
+    module.AP:set_set_reply_handler(on_set_reply)
 
     if module.deathlink then
         randomizer_helper.events.on_game_lost:subscribe(on_defeat)
@@ -416,6 +450,10 @@ local old_get_text = GetText
 function GetText(id, r1, r2, r3)
     if id == "Gameover_Timeline" then
         on_defeat(randomizer_helper.tracking.last_attacker)
+    elseif id == "Store_BuyTitle" then
+        module.energylink_shop:show()
+    elseif id == "Button_Select_Mission_Store" then
+        module.energylink_shop:hide()
     end
     return old_get_text(id, r1, r2, r3)
 end
