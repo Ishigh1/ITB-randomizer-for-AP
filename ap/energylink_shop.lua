@@ -130,6 +130,9 @@ return {
 
     update_energylink = function(self, amount)
         local available_rep = (amount or 0) / self.price
+        if available_rep > 1e8 then
+            available_rep = "Infinite"
+        end
         self.energylink_content:setsurface(available_rep)
     end,
 
