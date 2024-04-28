@@ -11,6 +11,7 @@ return {
         local get_button = Ui()
         self.energylink_content = DecoCAlignedText("0", font_title, text_setttings_title)
         self.energylink_name = "EnergyLink" .. ap_link.AP:get_team_number()
+        self.slot = ap_link.AP:get_player_number()
         local reputation = sdlext.getSurface({
             path = "img/ui/strategy/icon_stars.png"
         })
@@ -94,11 +95,13 @@ return {
                 randomizer_helper.memedit.set_rep(rep - 1)
                 local amount_added = self.price * self.efficiency
                 self.ap_link.AP:Set(self.energylink_name, 0, true, {
-                        { "add", amount_added }
+                        { "add", amount_added },
+                        { "floor", 0 },
                     },
                     {
                         id = self.ap_link.id,
                         action = "give rep",
+                        slot = self.slot,
                     })
                 return true
             end
@@ -115,6 +118,7 @@ return {
                     {
                         id = self.ap_link.id,
                         action = "take rep",
+                        slot = self.slot,
                     })
                 return true
             end

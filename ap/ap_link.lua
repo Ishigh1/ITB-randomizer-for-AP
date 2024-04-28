@@ -276,8 +276,11 @@ local function on_set_reply(message)
                 module.energylink_shop:update_energylink(message.value)
             else
                 module.AP:Set(module.energylink_shop.energylink_name, 0, false, {
-                    { "add", change }
-                })
+                        { "add", change },
+                    },
+                    {
+                        slot = module.energylink_shop.slot,
+                    })
                 module.energylink_shop:update_energylink(change)
             end
         elseif message.action == "give rep" then
