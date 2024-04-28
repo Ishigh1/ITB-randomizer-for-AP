@@ -60,20 +60,6 @@ function module.handle_bonus(item_name)
             Game:ModifyPowerGrid(-100)
         end
 
-        if module.queue.starting_power ~= 0 or module.queue.power ~= 0 then
-            local power = module.queue.starting_power + module.queue.power
-            while power > 0 do
-                Game:ModifyPowerGrid(SERIOUSLY_JUST_ONE)
-                power = power - 1
-            end
-            if power < 0 then
-                Game:ModifyPowerGrid(power)
-            end
-            module.queue.starting_power = 0
-            module.queue.power = 0
-            changed = true
-        end
-
         if module.queue.boss > 0 then
             for i = 1, module.queue.boss, 1 do
                 local boss = module.gift_data.boss_enemies[math.random(1, 8)]
