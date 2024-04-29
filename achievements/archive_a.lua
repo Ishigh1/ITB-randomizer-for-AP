@@ -6,7 +6,7 @@ local module = {}
 
 local function check_drowned(mission, pawn)
     if module.achievement1:is_active() and pawn:IsEnemy() and pawn:GetPathProf() %
-        3 == 0 and Board:GetTerrain(pawn:GetSpace()) == TERRAIN_WATER then
+        4 == 0 and Board:GetTerrain(pawn:GetSpace()) == TERRAIN_WATER then
         module.achievement1:addProgress(1)
     end
 end

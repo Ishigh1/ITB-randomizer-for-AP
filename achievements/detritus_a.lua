@@ -52,7 +52,7 @@ local function reset_speedrun()
 end
 
 local function check_speedrun(island)
-    if module.achievement2:is_active() and ((os.time() - module.achievement2:get_data("start") / 60) <= 30) then
+    if module.achievement2:is_active() and (((os.time() - module.achievement2:get_data("start")) / 60) <= 30) then
         module.achievement2:addProgress(1)
     end
 end

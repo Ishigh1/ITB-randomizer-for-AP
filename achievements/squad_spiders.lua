@@ -11,7 +11,7 @@ local function reset_breeding()
 end
 
 local function new_unit(mission, pawn)
-    if module.achievement1:is_active() and mission.deployment.phase == 2 and pawn:IsPlayer() then
+    if module.achievement1:is_active() and mission.deployment and mission.deployment.phase == 2 and pawn:IsPlayer() then
         module.achievement1:addProgress(1)
     end
 end
@@ -42,7 +42,7 @@ end
 local function reset_pushes()
     if module.achievement2:is_active() then
         module.achievement2.moved_units = {}
-        module.achievement2:resetProgress(1)
+        module.achievement2:resetProgress()
     end
 end
 
@@ -72,6 +72,7 @@ end
 function module.initialize_achievement_3(achievement, mod)
     modapiext.events.onPawnKilled:subscribe(register_kill)
     randomizer_helper.events.on_attack:subscribe(reset_kills)
+
     achievement.objective = 3
 end
 

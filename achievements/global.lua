@@ -32,7 +32,10 @@ function module.add_achievements()
         "Detritus_B",
         "", -- secret doesn't have any achievement
         "Squad_Bomber",
-        "Squad_Spiders"
+        "Squad_Spiders",
+        "Squad_Mist",
+        "Squad_Heat",
+        "Squad_Cataclysm",
     }
 
     local image_prefix = "img/achievements/"

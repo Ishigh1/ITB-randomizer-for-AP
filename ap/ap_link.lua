@@ -316,7 +316,7 @@ local function on_gift_received(gift)
             if trait_name == "Armor" then
                 for i = 0.5, strength, 0.5 do
                     handled = true
-                    local point = Point(math.random(1, 8), math.random(1, 8))
+                    local point = Point(math.random(0, 7), math.random(0, 7))
                     local damage = SpaceDamage(point, 0)
                     damage.iShield = EFFECT_CREATE
                     Board:AddEffect(damage)

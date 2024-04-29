@@ -78,9 +78,16 @@ end
 -- Code : Have 4 enemies die while it's their turn to act
 
 local function check_team_kill(mission, pawn)
-    if module.achievement2:is_active() and pawn:IsEnemy() and
-        (randomizer_helper.tracking.current_action == ATTACK_ORDER_TENTACLES or randomizer_helper.utils.is_enemy_turn()) then
-        module.achievement2:addProgress(1)
+    if module.achievement2:is_active() then
+        LOG(pawn:GetMechName() .. "was just killed")
+        LOG("Was it an enemy ? " .. tostring(pawn:IsEnemy()))
+        LOG("Was it their turn ? " .. tostring(randomizer_helper.utils.is_enemy_turn()))
+        LOG("What was the phase ? " .. tostring(randomizer_helper.tracking.current_action))
+        LOG("Whose turn was it ? " .. tostring(Game:GetTeamTurn()))
+        if pawn:IsEnemy() and
+            (randomizer_helper.tracking.current_action == ATTACK_ORDER_TENTACLES or randomizer_helper.utils.is_enemy_turn()) then
+            module.achievement2:addProgress(1)
+        end
     end
 end
 

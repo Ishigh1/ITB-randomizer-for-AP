@@ -9,6 +9,8 @@ randomizer_helper.events.on_overload_change = Event()
 randomizer_helper.events.on_building_damaged = Event()
 randomizer_helper.events.on_tile_fire = Event()
 randomizer_helper.events.on_tile_shield = Event()
+randomizer_helper.events.on_tile_crack = Event()
+randomizer_helper.events.on_terrain_change = Event()
 randomizer_helper.events.on_game_lost = Event()
 
 randomizer_helper.events.on_attack = Event()
@@ -35,6 +37,8 @@ local function make_tracking()
         tracking_content.health = Board:GetHealth(tile)
         tracking_content.fire = Board:IsFire(tile)
         tracking_content.shield = Board:IsShield(tile)
+        tracking_content.cracked = Board:IsCracked(tile)
+        tracking_content.terrain = Board:GetTerrain(tile)
 
         randomizer_helper.tracking.board[tile] = tracking_content
     end
@@ -69,6 +73,18 @@ local function register_game_changes()
                 local new_shield = not old_content.shield
                 old_content.shield = new_shield
                 randomizer_helper.events.on_tile_shield:dispatch(new_shield)
+            end
+
+            if Board:IsCracked(point) ~= old_content.cracked then
+                local new_cracked = not old_content.cracked
+                old_content.cracked = new_cracked
+                randomizer_helper.events.on_tile_crack:dispatch(new_cracked)
+            end
+
+            local new_terrain = Board:GetTerrain(point)
+            if new_terrain ~= old_content.terrain then
+                old_content.terrain = new_terrain
+                randomizer_helper.events.on_terrain_change:dispatch(old_content.terrain, new_terrain)
             end
         end
     else

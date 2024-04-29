@@ -1,8 +1,8 @@
 local module = {}
 
--- ACHIEVEMENT 1 : Healing
--- Text : Heal 10 Mech Health in a single battle
--- Code : Restore 10 HP to player units during a battle
+-- ACHIEVEMENT 1 : Stay With Me!
+-- Text : Heal 12 damage over the course of a single Island.
+-- Code : ^
 
 local function check_heal(mission, pawn, diff)
     if module.achievement1:is_active() and pawn:IsPlayer() then
@@ -17,52 +17,43 @@ local function reset_healing()
 end
 
 function module.initialize_achievement_1(achievement, mod)
-    achievement.objective = 10
     modapiext.events.onPawnHealed:subscribe(check_heal)
-    modApi.events.onMissionStart:subscribe(reset_healing)
+    modApi.events.onPostStartGame:subscribe(reset_healing)
+    modApi.events.onIslandLeft:subscribe(reset_healing)
+
+    achievement.objective = 12
 end
 
--- ACHIEVEMENT 2 : Immortal
--- Text : Finish 4 Corporate Islands without a Mech being destroyed at the end of a battle
--- Code : Finish 4 Corporate Islands without an ally being destroyed
+-- ACHIEVEMENT 2 : Let's Walk
+-- Text : Move Enemies with Control Shot 120 spaces in one game.
+-- Code : Move enemies 120 spaces total
 
-local function mortality()
-    module.achievement2.text = GetVanillaText("Ach_Detritus_B_2_Text") .. "\n" ..
-        GetVanillaText("Ach_Detritus_B_2_Failed")
-end
 
-local function check_immortality(mission, pawn)
-    if module.achievement2:is_active() and pawn:IsPlayer() then
-        mortality()
-        module.achievement2:set_data("failed_immortality", true)
+local function register_pushes(mission, pawn, old_position)
+    if module.achievement2:is_active() and randomizer_helper.utils.is_player_turn() then
+        local new_position = pawn:GetSpace()
+        local unit_move_distance = math.abs(new_position.x - old_position.x) +
+            math.abs(new_position.y - old_position.y)
+        module.achievement2:addProgress(unit_move_distance)
     end
 end
 
-local function regain_immortality()
+local function reset_pushes()
     if module.achievement2:is_active() then
         module.achievement2:resetProgress()
-        module.achievement2:set_data("Ach_Detritus_B_2_failed_immortality", nil)
-        module.achievement2.text = GetVanillaText("Ach_Detritus_B_2_Text")
-    end
-end
-
-local function gain_immortality(island)
-    if module.achievement2:is_active() and module.achievement2:get_data("Ach_Detritus_B_2_failed_immortality") == nil then
-        module.achievement2:addProgress(1)
     end
 end
 
 function module.initialize_achievement_2(achievement, mod)
-    achievement.objective = 4
+    modapiext.events.onPawnPositionChanged:subscribe(register_pushes)
+    modApi.events.onPostStartGame:subscribe(reset_pushes)
 
-    modapiext.events.onPawnKilled:subscribe(check_immortality)
-    modApi.events.onPostStartGame:subscribe(regain_immortality)
-    modApi.events.onIslandLeft:subscribe(gain_immortality)
+    achievement.objective = 120
 end
 
--- ACHIEVEMENT 3 : Overkill
--- Text : Deal 8 damage to a unit with a single attack
--- Code : Make so that any unit loses 8 hp in a single skill
+-- ACHIEVEMENT 3 : On the Backburner
+-- Text : Do 4 damage with the Reverse Thrusters.
+-- Code : Do 4 damage to a unit with a single attack
 
 local function handle_effect(effects, skillEffect, method)
     if effects == nil then
@@ -101,9 +92,9 @@ local function handle_effect(effects, skillEffect, method)
     end
 
     for _, damage in pairs(total_damage) do
-        if damage >= 8 then
-            mod_loader.mods["randomizer"].detritus_b_3 = module.achievement3
-            skillEffect[method](skillEffect, "mod_loader.mods[\"randomizer\"].detritus_b_3:addProgress(true)")
+        if damage >= 4 then
+            mod_loader.mods["randomizer"].squad_mist_3 = module.achievement3
+            skillEffect[method](skillEffect, "mod_loader.mods[\"randomizer\"].squad_mist_3:addProgress(true)")
             return
         end
     end
