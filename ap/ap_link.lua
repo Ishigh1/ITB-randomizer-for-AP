@@ -65,6 +65,8 @@ function module.handle_bonus(item_name)
                 local boss = module.gift_data.boss_enemies[math.random(1, 8)]
                 Board:SpawnPawn(boss)
             end
+            module.queue.boss = 0
+            changed = true
         end
     end
 
