@@ -13,14 +13,15 @@ local function init(self, options)
 end
 
 local function load(self, options, version)
-    LOG("Don't forget to makeitso")
+    LOG("Randomizer version " .. version .. " loaded")
+    LOG("Don't forget to makeitso if you didn't run the command once on this profile")
 end
 
 return {
     id = "randomizer",
     name = "Randomizer",
     description = "AP randomizer",
-    version = "1.0.0",
+    version = "0.9.3",
     modApiVersion = "2.9.2",
     requirements = {},
     metadata = metadata,
