@@ -87,6 +87,7 @@ return function(ap_link, seed_name, slot)
     local function save_data()
         if new then
             modApi:writeProfileData("randomizer_profiles", all_profiles)
+            LOG("saving data")
             new = false
         end
     end
