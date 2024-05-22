@@ -81,13 +81,14 @@ local function add_to_unlocked(item)
         return true
     end
 
-    local item_name = module.AP:get_item_name(item.item)
+    local item_name = module.mapping.item_id_to_name[string.format("%.0f", item.item)]
     local previous_value = module.unlocked_items[item_name]
 
     LOG("Received " .. item_name)
     modApi.toasts:add({
         title = "Item Received",
-        name = item_name
+        name = item_name,
+        image = module.item_name_to_image[item_name]
     })
 
     if previous_value then
@@ -96,7 +97,7 @@ local function add_to_unlocked(item)
         module.unlocked_items[item_name] = 1
     end
     module.unlocked_items.count = module.unlocked_items.count + 1
-    LOG("Current items : " .. randomizer_helper.tools.tprint(module.unlocked_items))
+    LOG("Current items : " .. json.encode(module.unlocked_items))
     module.profile_manager.set_data("unlocked_items", module.unlocked_items)
     module.handle_bonus(item_name)
     return true
@@ -113,7 +114,7 @@ local function on_room_info()
     if module.hint then
         table.insert(tags, "TextOnly")
     end
-    module.AP:ConnectSlot(slot, password, items_handling, tags, { 0, 4, 5 })
+    module.AP:ConnectSlot(slot, password, items_handling, tags, { 0, 4, 6 })
 end
 
 local function win()
@@ -184,43 +185,23 @@ local function on_slot_connected(slot_data)
 end
 
 local function on_items_received(items)
-    if module.AP:is_data_package_valid() then
-        local count = 0
-        for _, item in ipairs(items) do
-            if item.index == 0 then
-                item.index = count
-                count = count + 1
-            end
-            add_to_unlocked(item)
+    local count = 0
+    for _, item in ipairs(items) do
+        if item.index == 0 then
+            item.index = count
+            count = count + 1
         end
-    else
-        if module.waiting_items == nil then
-            module.waiting_items = items
-        else
-            for _, item in ipairs(items) do
-                table.insert(module.waiting_items, item)
-            end
-        end
+        add_to_unlocked(item)
     end
 end
 
 local function on_location_checked(locations)
-    if module.AP:is_data_package_valid() then
-        for _, location_id in ipairs(locations) do
-            local location_name = module.AP:get_location_name(location_id)
-            LOG("Checked location " .. location_name)
-            local achievement = modApi.achievements:get("randomizer", location_name)
-            achievement:completeProgress()
-            module.queued_locations[location_name] = nil
-        end
-    else
-        if module.waiting_locations == nil then
-            module.waiting_locations = locations
-        else
-            for _, location in ipairs(locations) do
-                table.insert(module.waiting_locations, location)
-            end
-        end
+    for _, location_id in ipairs(locations) do
+        local location_name = module.mapping.location_id_to_name[string.format("%.0f", location_id)]
+        LOG("Checked location " .. location_name)
+        local achievement = modApi.achievements:get("randomizer", location_name)
+        achievement:completeProgress()
+        module.queued_locations[location_name] = nil
     end
 end
 
@@ -234,15 +215,6 @@ local function on_bounced(bounce)
             module.handle_bonus("DeathLink")
             return
         end
-    end
-end
-
-local function on_datapackage(data_package)
-    if module.waiting_items ~= nil then
-        on_items_received(module.waiting_items)
-    end
-    if module.waiting_locations ~= nil then
-        on_location_checked(module.waiting_locations)
     end
 end
 
@@ -369,7 +341,6 @@ local function initialize_socket()
     module.AP:set_items_received_handler(on_items_received)
     module.AP:set_location_checked_handler(on_location_checked)
     module.AP:set_bounced_handler(on_bounced)
-    module.AP:set_data_package_changed_handler(on_datapackage)
     module.AP:set_retrieved_handler(on_retrieved)
     module.AP:set_set_reply_handler(on_set_reply)
 
@@ -394,7 +365,7 @@ local function keep_alive()
                     if location_name == "Victory" then
                         module.AP:StatusUpdate(module.AP.ClientStatus.GOAL)
                     else
-                        local id = module.AP:get_location_id(location_name)
+                        local id = module.mapping.location_name_to_id[location_name]
                         LOG("Checking location " .. location_name .. " ID : " .. id)
                         table.insert(locations, id)
                     end
@@ -420,6 +391,9 @@ function module.init(mod)
     module.profile_initializing = true
     module.mod = mod
 
+    module.mapping = json.decode(File(mod.scriptPath .. "data/mapping.json"):read_to_string())
+    module.item_name_to_image = require(mod.scriptPath .. "data/item_name_to_image")
+
     local ap_ui = require(mod.scriptPath .. "ap/ap_ui")(module)
     module.ap_dll = package.loadlib(mod.resourcePath .. "lib/lua-apclientpp.dll", "luaopen_apclientpp")()
     modApi.events.onGameVictory:subscribe(check_win)
@@ -431,7 +405,7 @@ function module.init(mod)
 end
 
 function module.complete_location(location_name)
-    if not list_contains(module.AP.checked_locations, module.AP:get_location_id(location_name)) then
+    if not list_contains(module.AP.checked_locations, module.mapping.location_name_to_id[location_name]) then
         module.queued_locations[location_name] = true
         module.frame = 0
     end

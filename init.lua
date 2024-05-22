@@ -2,6 +2,8 @@ local function metadata(self)
 end
 
 local function init(self, options)
+    json = require(self.resourcePath .. "lib/json")
+
     require(self.scriptPath .. "helpers/randomizer_helper")
     randomizer_helper.memedit = require(self.scriptPath .. "helpers/custom_memedit")
     require(self.scriptPath .. "helpers/GameEvents")
@@ -21,8 +23,8 @@ return {
     id = "randomizer",
     name = "Randomizer",
     description = "AP randomizer",
-    version = "0.9.3",
-    modApiVersion = "2.9.2",
+    version = "0.10.0",
+    modApiVersion = "2.9.3",
     requirements = {},
     metadata = metadata,
     init = init,

@@ -32,7 +32,7 @@ return function(ap_link, seed_name, slot)
     end
 
     function module.set_achievement_data(achievement, name, value)
-        LOG("Saving data for achievement " .. achievement.id .. "|" .. name .. " : " .. randomizer_helper.tools.tprint(value))
+        LOG("Saving data for achievement " .. achievement.id .. "|" .. name .. " : " .. json.encode(value))
         local achievement_data = current_profile[achievement.id]
         if achievement_data == nil then
             achievement_data = {}
