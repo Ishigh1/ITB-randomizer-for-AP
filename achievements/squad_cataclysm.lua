@@ -29,9 +29,9 @@ end
 
 
 local function check_fell(mission, pawn)
-    if module.achievement1:is_active() and pawn:IsEnemy() and pawn:GetPathProf() %
-        2 == 0 and Board:GetTerrain(pawn:GetSpace()) == TERRAIN_HOLE then
-        module.achievement1:addProgress(1)
+    if module.achievement2:is_active() and pawn:IsEnemy() and pawn:GetPathProf() % 2 == 0 and
+        Board:GetTerrain(pawn:GetSpace()) == TERRAIN_HOLE then
+        module.achievement2:addProgress(1)
     end
 end
 

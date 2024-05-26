@@ -196,6 +196,9 @@ local function on_items_received(items)
 end
 
 local function on_location_checked(locations)
+    local old_toast = modApi.toasts.add
+    function modApi.toasts.add() -- just disable the toast for achievements
+    end
     for _, location_id in ipairs(locations) do
         local location_name = module.mapping.location_id_to_name[string.format("%.0f", location_id)]
         LOG("Checked location " .. location_name)
@@ -203,6 +206,7 @@ local function on_location_checked(locations)
         achievement:completeProgress()
         module.queued_locations[location_name] = nil
     end
+    modApi.toasts.add = old_toast
 end
 
 local function on_bounced(bounce)

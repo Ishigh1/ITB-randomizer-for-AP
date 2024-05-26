@@ -28,6 +28,7 @@ end
 
 local function reset_game_tracking()
     randomizer_helper.tracking.last_overload = nil
+    randomizer_helper.tracking.current_turn = TEAM_PLAYER
     reset_board_tracking()
 end
 
@@ -105,6 +106,16 @@ local function register_game_changes()
     end
 end
 
+local function register_environment(mission)
+    randomizer_helper.tracking.current_turn = TEAM_ENEMY
+end
+
+local function register_turn_change(mission)
+    if Game:GetTeamTurn() == TEAM_PLAYER then
+        randomizer_helper.tracking.current_turn = TEAM_PLAYER
+    end
+end
+
 local function register_attack(mission, pawn, weapon_id, p1, p2)
     randomizer_helper.tracking.last_attacker = pawn:GetMechName()
     randomizer_helper.events.on_attack:dispatch(mission, pawn, weapon_id, p1, p2)
@@ -115,6 +126,8 @@ modApi.events.onFrameDrawn:subscribe(register_game_changes)
 modApi.events.onMissionStart:subscribe(reset_board_tracking)
 modApi.events.onPostLoadGame:subscribe(reset_game_tracking)
 modApi.events.onPostStartGame:subscribe(reset_game_tracking)
+modApi.events.onPreEnvironment:subscribe(register_environment)
+modApi.events.onNextTurn:subscribe(register_turn_change)
 
 modapiext.events.onSkillStart:subscribe(register_attack)
 modapiext.events.onFinalEffectStart:subscribe(register_attack)
@@ -150,9 +163,9 @@ function randomizer_helper.utils.compute_push(effects)
 end
 
 function randomizer_helper.utils.is_player_turn()
-    return Game:GetTeamTurn() == TEAM_PLAYER and randomizer_helper.tracking.current_action == ATTACK_ORDER_IDLE
+    return randomizer_helper.tracking.current_turn == TEAM_PLAYER and randomizer_helper.tracking.current_action == ATTACK_ORDER_IDLE
 end
 
 function randomizer_helper.utils.is_enemy_turn()
-    return Game:GetTeamTurn() == TEAM_ENEMY and randomizer_helper.tracking.current_action == ATTACK_ORDER_IDLE
+    return randomizer_helper.tracking.current_turn == TEAM_ENEMY and randomizer_helper.tracking.current_action == ATTACK_ORDER_IDLE
 end
