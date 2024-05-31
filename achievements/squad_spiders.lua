@@ -4,7 +4,7 @@ local module = {}
 -- Text : Spawn 15 Arachnoids in one Island.
 -- Code : Spawn 15 allies in one island
 
-local function reset_breeding()
+local function reset_breeding(island)
     if module.achievement1:is_active() then
         module.achievement1:resetProgress()
     end

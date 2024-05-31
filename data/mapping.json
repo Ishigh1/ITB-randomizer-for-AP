@@ -57,7 +57,11 @@
     "6777699702823046": "Maximum Firepower",
     "6777699702823047": "Unstable Ground",
     "6777699702823048": "Core of the Earth",
-    "6777699702823049": "Miner Inconvenience"
+    "6777699702823049": "Miner Inconvenience",
+    "6777699702823050": "Island 1 cleared",
+    "6777699702823051": "Island 2 cleared",
+    "6777699702823052": "Island 3 cleared",
+    "6777699702823053": "Island 4 cleared"
   },
   "location_name_to_id": {
     "Watery Grave": 6777699702823011,
@@ -98,6 +102,10 @@
     "Maximum Firepower": 6777699702823046,
     "Unstable Ground": 6777699702823047,
     "Core of the Earth": 6777699702823048,
-    "Miner Inconvenience": 6777699702823049
+    "Miner Inconvenience": 6777699702823049,
+    "Island 1 cleared": 6777699702823050,
+    "Island 2 cleared": 6777699702823051,
+    "Island 3 cleared": 6777699702823052,
+    "Island 4 cleared": 6777699702823053
   }
 }

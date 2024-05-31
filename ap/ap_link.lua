@@ -1,5 +1,8 @@
 local module = {}
 
+local FIRST_ACHIEVEMENT_ID = 6777699702823011
+local LAST_ACHIEVEMENT_ID = 6777699702823049
+
 local function reset_unlocked_content()
     module.unlocked_items = {
         count = 0
@@ -117,14 +120,30 @@ local function on_room_info()
     module.AP:ConnectSlot(slot, password, items_handling, tags, { 0, 4, 6 })
 end
 
+local function finish_island(island)
+    local islandsSecured = 0
+    for i = 0, 3 do
+        if RegionData["island" .. i].secured then
+            islandsSecured = islandsSecured + 1
+        end
+    end
+    module.complete_location("Island " .. i .. " cleared")
+end
+
 local function win()
     module.queued_locations["Victory"] = true
-    module.profile_manager.set_data("victory", true)
     module.frame = 0
 end
 
 local function check_win()
-    if #module.AP.checked_locations >= module.required_achievements then
+    local achievements = 0
+    for location_id in module.AP.checked_locations do
+        if location_id <= LAST_ACHIEVEMENT_ID then
+            achievements = achievements + 1;
+        end
+    end
+
+    if achievements >= module.required_achievements then
         win()
     end
 end
@@ -149,10 +168,6 @@ local function on_slot_connected(slot_data)
         end
 
         initialize_unlocked_content()
-
-        if module.profile_manager.get_data("victory") then
-            win()
-        end
 
         module.squad_randomizer = require(module.mod.scriptPath .. "squad_randomizer")
         module.squad_randomizer.slot_data = slot_data.squads
@@ -199,12 +214,15 @@ local function on_location_checked(locations)
     local old_toast = modApi.toasts.add
     function modApi.toasts.add() -- just disable the toast for achievements
     end
+
     for _, location_id in ipairs(locations) do
-        local location_name = module.mapping.location_id_to_name[string.format("%.0f", location_id)]
-        LOG("Checked location " .. location_name)
-        local achievement = modApi.achievements:get("randomizer", location_name)
-        achievement:completeProgress()
-        module.queued_locations[location_name] = nil
+        if location_id <= LAST_ACHIEVEMENT_ID then
+            local location_name = module.mapping.location_id_to_name[string.format("%.0f", location_id)]
+            LOG("Checked location " .. location_name)
+            local achievement = modApi.achievements:get("randomizer", location_name)
+            achievement:completeProgress()
+            module.queued_locations[location_name] = nil
+        end
     end
     modApi.toasts.add = old_toast
 end
@@ -214,7 +232,7 @@ local function on_bounced(bounce)
         return
     end
 
-    for index, value in ipairs(bounce.tags) do
+    for _, value in ipairs(bounce.tags) do
         if value == "DeathLink" then
             module.handle_bonus("DeathLink")
             return
@@ -239,7 +257,8 @@ local function on_set_reply(message)
                 randomizer_helper.memedit.set_rep(rep + 1)
                 module.energylink_shop:update_energylink(message.value)
             else
-                module.AP:Set(module.energylink_shop.energylink_name, 0, false, {
+                module.AP:Set(module.energylink_shop.energylink_name, 0, false,
+                    {
                         { "add", change },
                     },
                     {
@@ -300,7 +319,7 @@ local function on_gift_received(gift)
                     Board:AddEffect(damage)
                 end
             elseif trait_name == "Egg" then
-                for i = 1, amount, 1 do
+                for _ = 1, amount, 1 do
                     handled = true
                     local spawn_name
                     if math.random(1, 100 * quality) < 50 then
@@ -400,6 +419,7 @@ function module.init(mod)
 
     local ap_ui = require(mod.scriptPath .. "ap/ap_ui")(module)
     module.ap_dll = package.loadlib(mod.resourcePath .. "lib/lua-apclientpp.dll", "luaopen_apclientpp")()
+    modApi.events.onIslandLeft:subscribe(finish_island)
     modApi.events.onGameVictory:subscribe(check_win)
     modApi.events.onMainMenuEntered:subscribe(ap_ui)
     modApi.events.onFrameDrawn:subscribe(keep_alive)

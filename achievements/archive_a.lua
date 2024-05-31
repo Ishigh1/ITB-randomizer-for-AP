@@ -65,7 +65,7 @@ end
 -- Code : Complete any Island with the Rift Walkers squad
 
 function module.initialize_achievement_3(achievement, mod)
-    modApi.events.onIslandLeft:subscribe(function()
+    modApi.events.onIslandLeft:subscribe(function(island)
         if module.achievement3:is_active() then
             module.achievement3:addProgress(true)
         end
