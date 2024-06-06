@@ -229,7 +229,7 @@ local function on_location_checked(locations)
 end
 
 local function on_bounced(bounce)
-    if not module.deathlink then
+    if not module.deathlink and not bounce.tags then
         return
     end
 
@@ -390,8 +390,12 @@ local function keep_alive()
                         module.AP:StatusUpdate(module.AP.ClientStatus.GOAL)
                     else
                         local id = module.mapping.location_name_to_id[location_name]
-                        LOG("Checking location " .. location_name .. " ID : " .. id)
-                        table.insert(locations, id)
+                        if id == nil then
+                            LOG("Error : failed checking location " .. location_name)
+                        else
+                            LOG("Checking location " .. location_name .. " ID : " .. tostring(id))
+                            table.insert(locations, id)
+                        end
                     end
                 end
 
