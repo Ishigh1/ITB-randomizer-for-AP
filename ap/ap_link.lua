@@ -134,6 +134,7 @@ local function check_win()
         end
     end
 
+    LOG("Cleared the game with " .. achievements .. " achievements (" .. module.required_achievements .. " required)")
     if achievements >= module.required_achievements then
         win()
     end
