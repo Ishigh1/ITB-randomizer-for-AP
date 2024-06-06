@@ -37,6 +37,7 @@ function module.handle_bonus(item_name)
             module.queue.boss = module.queue.boss + 1
             changed = true
         elseif item_name == "New Game" then -- Dummy item to not rewrite the logic
+            module.queue.dying = nil
             changed = true
         elseif item_name == "New Save" then -- Dummy item to not rewrite the logic
             module.queue = {}
@@ -127,7 +128,7 @@ local function finish_island(island)
             islandsSecured = islandsSecured + 1
         end
     end
-    module.complete_location("Island " .. i .. " cleared")
+    module.complete_location("Island " .. islandsSecured .. " cleared")
 end
 
 local function win()
@@ -137,7 +138,7 @@ end
 
 local function check_win()
     local achievements = 0
-    for location_id in module.AP.checked_locations do
+    for _, location_id in ipairs(module.AP.checked_locations) do
         if location_id <= LAST_ACHIEVEMENT_ID then
             achievements = achievements + 1;
         end
