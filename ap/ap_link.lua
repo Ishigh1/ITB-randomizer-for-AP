@@ -121,16 +121,6 @@ local function on_room_info()
     module.AP:ConnectSlot(slot, password, items_handling, tags, { 0, 4, 6 })
 end
 
-local function finish_island(island)
-    local islandsSecured = 0
-    for i = 0, 3 do
-        if RegionData["island" .. i].secured then
-            islandsSecured = islandsSecured + 1
-        end
-    end
-    module.complete_location("Island " .. islandsSecured .. " cleared")
-end
-
 local function win()
     module.queued_locations["Victory"] = true
     module.frame = 0
@@ -166,6 +156,14 @@ local function on_slot_connected(slot_data)
         module.queue = module.profile_manager.get_data("queued_items")
         if module.queue == nil then
             module.handle_bonus("New Save")
+        end
+
+        module.islands_secured = module.profile_manager.get_data("islands_secured")
+        if module.islands_secured == nil then
+            module.islands_secured = 0
+        end
+        for island = 1, module.islands_secured do
+            module.complete_location("Island " .. island .. " cleared")
         end
 
         initialize_unlocked_content()
@@ -217,13 +215,13 @@ local function on_location_checked(locations)
     end
 
     for _, location_id in ipairs(locations) do
+        local location_name = module.mapping.location_id_to_name[string.format("%.0f", location_id)]
+        LOG("Checked location " .. location_name)
         if location_id <= LAST_ACHIEVEMENT_ID then
-            local location_name = module.mapping.location_id_to_name[string.format("%.0f", location_id)]
-            LOG("Checked location " .. location_name)
             local achievement = modApi.achievements:get("randomizer", location_name)
             achievement:completeProgress()
-            module.queued_locations[location_name] = nil
         end
+        module.queued_locations[location_name] = nil
     end
     modApi.toasts.add = old_toast
 end
@@ -424,7 +422,6 @@ function module.init(mod)
 
     local ap_ui = require(mod.scriptPath .. "ap/ap_ui")(module)
     module.ap_dll = package.loadlib(mod.resourcePath .. "lib/lua-apclientpp.dll", "luaopen_apclientpp")()
-    modApi.events.onIslandLeft:subscribe(finish_island)
     modApi.events.onGameVictory:subscribe(check_win)
     modApi.events.onMainMenuEntered:subscribe(ap_ui)
     modApi.events.onFrameDrawn:subscribe(keep_alive)
@@ -447,6 +444,12 @@ function GetText(id, r1, r2, r3)
     elseif id == "Store_BuyTitle" then
         module.energylink_shop:show()
     elseif id == "Button_Select_Mission_Store" then
+        local islands_secured = Game:GetSector()
+        if islands_secured > module.islands_secured then
+            module.profile_manager.set_data("islands_secured", islands_secured)
+            module.islands_secured = islands_secured
+            module.complete_location("Island " .. islands_secured .. " cleared")
+        end
         module.energylink_shop:hide()
     end
     return old_get_text(id, r1, r2, r3)
