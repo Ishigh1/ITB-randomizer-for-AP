@@ -3,7 +3,7 @@ return function(ap_link)
         modApi.events.onMainMenuEntered:unsubscribe(ask_for_credentials)
 
         local font_title = sdlext.font("fonts/JustinFont12Bold.ttf", 16)
-        local text_setttings_title = deco.uifont.default.set
+        local text_settings_title = deco.uifont.default.set
 
         local server = UiInputField()
         local slot = UiInputField()
@@ -27,7 +27,7 @@ return function(ap_link)
                 DecoButton(),
                 DecoInputField {
                     font = font_title,
-                    textset = text_setttings_title,
+                    textset = text_settings_title,
                     alignH = "center",
                     alignV = "center",
                 }
@@ -43,7 +43,7 @@ return function(ap_link)
                 DecoButton(),
                 DecoInputField {
                     font = font_title,
-                    textset = text_setttings_title,
+                    textset = text_settings_title,
                     alignH = "center",
                     alignV = "center",
                 }
@@ -59,7 +59,7 @@ return function(ap_link)
                 DecoButton(),
                 DecoInputField {
                     font = font_title,
-                    textset = text_setttings_title,
+                    textset = text_settings_title,
                     alignH = "center",
                     alignV = "center",
                 }
@@ -72,7 +72,7 @@ return function(ap_link)
             :decorate({
                 DecoButton(),
                 DecoCheckbox(),
-                DecoCAlignedText("Deathlink", font_title, text_setttings_title)
+                DecoCAlignedText("Deathlink", font_title, text_settings_title)
             })
             :endUi()
             --:beginUi(hint) -- Waiting for item scouting to exist
@@ -82,7 +82,7 @@ return function(ap_link)
             --    :decorate({
             --        DecoButton(),
             --        DecoCheckbox(),
-            --        DecoCAlignedText("Hint mode", font_title, text_setttings_title)
+            --        DecoCAlignedText("Hint mode", font_title, text_settings_title)
             --    })
             --:endUi()
             :beginUi(button)
@@ -91,7 +91,7 @@ return function(ap_link)
             :pos(0.025, 0.825)
             :decorate {
                 DecoButton(),
-                DecoCAlignedText("Connect", font_title, text_setttings_title)
+                DecoCAlignedText("Connect", font_title, text_settings_title)
             }
             :endUi()
             :addTo(sdlext.getUiRoot())
@@ -118,7 +118,7 @@ return function(ap_link)
                     :width(0.5)
                     :posCentered()
                     :decorate {
-                        DecoCAlignedText("Connecting...", font_title, text_setttings_title)
+                        DecoCAlignedText("Connecting...", font_title, text_settings_title)
                     }
                     :addTo(sdlext.getUiRoot())
                 return true

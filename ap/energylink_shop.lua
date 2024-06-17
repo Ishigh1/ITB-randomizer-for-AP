@@ -5,11 +5,11 @@ return {
     init = function(self, ap_link)
         self.ap_link = ap_link
         local font_title = sdlext.font("fonts/JustinFont12Bold.ttf", 16)
-        local text_setttings_title = deco.uifont.default.set
+        local text_settings_title = deco.uifont.default.set
 
         local send_button = Ui()
         local get_button = Ui()
-        self.energylink_content = DecoCAlignedText("0", font_title, text_setttings_title)
+        self.energylink_content = DecoCAlignedText("0", font_title, text_settings_title)
         self.energylink_name = "EnergyLink" .. ap_link.AP:get_team_number()
         self.slot = ap_link.AP:get_player_number()
         local reputation = sdlext.getSurface({
@@ -27,7 +27,7 @@ return {
             :width(0.9)
             :posCentered(0.5, 0.1)
             :decorate {
-                DecoCAlignedText("Energylink", font_title, text_setttings_title)
+                DecoCAlignedText("Energylink", font_title, text_settings_title)
             }
             :endUi()
 
@@ -39,7 +39,7 @@ return {
             :settooltip("Send 1 reputation to energylink", nil, true)
             :decorate {
                 DecoButton(),
-                DecoCAlignedText("Send 1 reputation", font_title, text_setttings_title)
+                DecoCAlignedText("Send 1 reputation", font_title, text_settings_title)
             }
             :endUi()
 
@@ -51,7 +51,7 @@ return {
             :settooltip("Get 1 reputation from energylink", nil, true)
             :decorate {
                 DecoButton(),
-                DecoCAlignedText("Get 1 reputation", font_title, text_setttings_title)
+                DecoCAlignedText("Get 1 reputation", font_title, text_settings_title)
             }
             :endUi()
 
@@ -60,7 +60,7 @@ return {
             :width(0.9)
             :posCentered(0.5, 0.75)
             :decorate {
-                DecoCAlignedText("Energylink content :", font_title, text_setttings_title)
+                DecoCAlignedText("Energylink content :", font_title, text_settings_title)
             }
             :endUi()
 

@@ -122,20 +122,26 @@ local function on_room_info()
 end
 
 local function win()
-    module.queued_locations["Victory"] = true
+    module.profile_manager.set_data("Victory", true)
     module.frame = 0
 end
 
-local function check_win()
+function module:achievement_count()
     local achievements = 0
-    for _, location_id in ipairs(module.AP.checked_locations) do
+    for _, location_id in ipairs(self.AP.checked_locations) do
         if location_id <= LAST_ACHIEVEMENT_ID then
             achievements = achievements + 1;
         end
     end
+    return achievements
+end
 
-    LOG("Cleared the game with " .. achievements .. " achievements (" .. module.required_achievements .. " required)")
-    if achievements >= module.required_achievements then
+local function check_win()
+    local achievements = module.achievement_count()
+
+    LOG("Cleared the game with " .. achievements .. " achievements (" .. module.required_achievements .. " required)"
+        .. "Difficulty : " .. GetDifficulty() .. " (" .. module.difficulty .. " required)")
+    if achievements >= module.required_achievements and GetDifficulty() >= module.difficulty then
         win()
     end
 end
@@ -153,6 +159,11 @@ local function on_slot_connected(slot_data)
 
         module.custom = slot_data.custom
         module.required_achievements = slot_data.required_achievements
+        module.difficulty = slot_data.difficulty
+
+        if not module.profile_manager.get_data("queued_locations") then
+            module.profile_manager.set_data("queued_locations", {})
+        end
 
         module.queue = module.profile_manager.get_data("queued_items")
         if module.queue == nil then
@@ -190,6 +201,9 @@ local function on_slot_connected(slot_data)
 
         module.energylink_shop = require(module.mod.scriptPath .. "ap/energylink_shop")
         module.energylink_shop:init(module)
+
+        module.progress_bar = require(module.mod.scriptPath .. "ap/progress_bar")
+        module.progress_bar:init(module)
     end
     module.ui:detach()
     module.ui = nil
@@ -215,6 +229,7 @@ local function on_location_checked(locations)
     function modApi.toasts.add() -- just disable the toast for achievements
     end
 
+    local queued_locations = module.profile_manager.get_data("queued_locations")
     for _, location_id in ipairs(locations) do
         local location_name = module.mapping.location_id_to_name[string.format("%.0f", location_id)]
         LOG("Checked location " .. location_name)
@@ -222,9 +237,14 @@ local function on_location_checked(locations)
             local achievement = modApi.achievements:get("randomizer", location_name)
             achievement:completeProgress()
         end
-        module.queued_locations[location_name] = nil
+        queued_locations[location_name] = nil
     end
+    module.profile_manager.set_data("queued_locations", queued_locations)
     modApi.toasts.add = old_toast
+
+    if module.progress_bar ~= nil then
+        module.progress_bar:update()
+    end
 end
 
 local function on_bounced(bounce)
@@ -380,22 +400,22 @@ local function keep_alive()
             module.frame = module.frame + 1
             module.AP:poll()
 
-            if not module.profile_initializing and module.frame % 60 == 0 and module.AP:is_data_package_valid() then
+            if not module.profile_initializing and module.frame % 60 == 0 then
                 module.squad_randomizer.edit_squads()
 
                 local locations = {}
-                for location_name, _ in pairs(module.queued_locations) do
-                    if location_name == "Victory" then
-                        module.AP:StatusUpdate(module.AP.ClientStatus.GOAL)
+                for location_name, _ in pairs(module.profile_manager.get_data("queued_locations")) do
+                    local id = module.mapping.location_name_to_id[location_name]
+                    if id == nil then
+                        LOG("Error : failed checking location " .. location_name)
                     else
-                        local id = module.mapping.location_name_to_id[location_name]
-                        if id == nil then
-                            LOG("Error : failed checking location " .. location_name)
-                        else
-                            LOG("Checking location " .. location_name .. " ID : " .. tostring(id))
-                            table.insert(locations, id)
-                        end
+                        LOG("Checking location " .. location_name .. " ID : " .. tostring(id))
+                        table.insert(locations, id)
                     end
+                end
+                if module.profile_manager.get_data("Victory")
+                    and module.ap.ClientStatus ~= module.AP.ClientStatus.GOAL then
+                    module.AP:StatusUpdate(module.AP.ClientStatus.GOAL)
                 end
 
                 if (#locations > 0) then
@@ -412,7 +432,6 @@ end
 
 function module.init(mod)
     module.frame = 0
-    module.queued_locations = {}
     module.in_mission = false
     module.initializing = true
     module.profile_initializing = true
@@ -433,7 +452,10 @@ end
 
 function module.complete_location(location_name)
     if not list_contains(module.AP.checked_locations, module.mapping.location_name_to_id[location_name]) then
-        module.queued_locations[location_name] = true
+        local queued_locations = module.profile_manager.get_data("queued_locations")
+        queued_locations[location_name] = true
+        module.profile_manager.set_data("queued_locations", queued_locations)
+
         module.frame = 0
     end
 end
