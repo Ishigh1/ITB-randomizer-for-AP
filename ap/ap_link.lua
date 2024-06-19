@@ -137,7 +137,7 @@ function module:achievement_count()
 end
 
 local function check_win()
-    local achievements = module.achievement_count()
+    local achievements = module:achievement_count()
 
     LOG("Cleared the game with " .. achievements .. " achievements (" .. module.required_achievements .. " required)"
         .. "Difficulty : " .. GetDifficulty() .. " (" .. module.difficulty .. " required)")
