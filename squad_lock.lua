@@ -69,6 +69,8 @@ local function add_lock(page, id)
     table.insert(open_ui, ui)
 end
 
+local squad_page
+
 local function destroy_ui()
     if (#open_ui > 0) then
         for _, ui in ipairs(open_ui) do
@@ -78,8 +80,21 @@ local function destroy_ui()
     end
 end
 
+local function exit_ui()
+    squad_page = nil
+    destroy_ui()
+end
+
 local function lock_squads(current_page)
     if Game == nil then -- Also happens when the inventory has pages
+        if type(current_page) == "number" then
+            squad_page = current_page
+        else
+            if squad_page == nil then
+                return
+            end
+            current_page = squad_page
+        end
         destroy_ui()
 
         for i = 0, 7, 1 do
@@ -168,7 +183,10 @@ function module.initialize(ap_link)
     module.squad_randomizer = ap_link.squad_randomizer
 
     modApi.events.onSquadSelectionPageChanged:subscribe(lock_squads)
-    modApi.events.onSquadSelectionWindowHidden:subscribe(destroy_ui)
+    modApi.events.onSquadSelectionWindowHidden:subscribe(exit_ui)
+
+    modApi.events.onAchievementsWindowShown:subscribe(destroy_ui)
+    modApi.events.onAchievementsWindowHidden:subscribe(lock_squads)
 
     modApi.events.onCustomizeSquadWindowShown:subscribe(squad_shown)
     modApi.events.onCustomizeSquadWindowHidden:subscribe(squad_hidden)
