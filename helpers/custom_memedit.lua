@@ -80,4 +80,9 @@ function custom_memedit_methods.add_power(power)
     end
 end
 
+function custom_memedit_methods.add_cores(cores)
+    local current_cores = custom_memedit_methods.get_cores()
+    custom_memedit_methods.set_cores(current_cores + cores)
+end
+
 return custom_memedit_methods

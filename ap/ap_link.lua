@@ -30,8 +30,19 @@ function module.handle_bonus(item_name)
             if Game ~= nil then
                 randomizer_helper.memedit.add_power(2)
             end
-        elseif item_name == "1 Grid Power" then
-            module.queue.power = module.queue.power + 1
+        elseif item_name == "1 Starting Grid Power" then
+            if Game ~= nil then
+                randomizer_helper.memedit.add_power(1)
+            end
+        elseif item_name == "1 Starting Power Core" then
+            if Game ~= nil then
+                randomizer_helper.memedit.add_cores(1)
+            end
+        elseif item_name == "3 Grid Power" then
+            module.queue.power = module.queue.power + 3
+            changed = true
+        elseif item_name == "2 Power Cores" then
+            module.queue.core = module.queue.core + 2
             changed = true
         elseif item_name == "Boss Enemy" then
             module.queue.boss = module.queue.boss + 1
@@ -43,6 +54,7 @@ function module.handle_bonus(item_name)
             module.queue = {}
             module.queue.power = 0
             module.queue.boss = 0
+            module.queue.core = 0
             changed = true
         elseif item_name == "DeathLink" then
             if Game ~= nil then
@@ -52,10 +64,15 @@ function module.handle_bonus(item_name)
     end
 
     if Game ~= nil then
-        if (module.queue.power) then
+        if module.queue.power then
             randomizer_helper.memedit.add_power(module.queue.power)
             module.queue.power = 0
-            module.changed = true
+            changed = true
+        end
+        if module.queue.core then
+            randomizer_helper.memedit.add_cores(module.queue.core)
+            module.queue.core = 0
+            changed = true
         end
     end
 
