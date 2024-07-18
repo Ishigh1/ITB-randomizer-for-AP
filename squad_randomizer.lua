@@ -64,7 +64,7 @@ function module.edit_squads()
             local unit = _G[squad[i]]
             table.insert(module.squads[unit.Class], squad[1])
         end
-        modApi:addSquad(squad, "squad" .. index, old_text[index * 2], old_icon[index])
+        modApi:addSquad(squad, squad[1], old_text[index * 2], old_icon[index])
 
         modApi.squadIndices[index] = #modApi.mod_squads
     end
