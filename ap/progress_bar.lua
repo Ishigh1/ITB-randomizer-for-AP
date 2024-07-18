@@ -36,7 +36,7 @@ return {
 
         self.progress_bar:width(progress)
 
-        if self.ap_link.profile_manager.get_data("Victory") then
+        if self.ap_link.profile_manager:get_data("Victory") then
             self.progress_text:setsurface("You won!")
         elseif progress < 1 then
             self.progress_text:setsurface("Not enough achievements to win (" .. current_achievements .. "/"

@@ -15,11 +15,11 @@ return function(ap_link, seed_name, slot)
 
     local module = {}
 
-    function module.get_data(name)
+    function module:get_data(name)
         return current_profile[name]
     end
 
-    function module.set_data(name, value)
+    function module:set_data(name, value)
         current_profile[name] = value
         new = true
     end
