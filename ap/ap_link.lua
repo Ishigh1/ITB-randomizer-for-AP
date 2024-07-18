@@ -44,8 +44,10 @@ function module.handle_bonus(item_name)
         elseif item_name == "2 Power Cores" then
             module.queue.core = module.queue.core + 2
             changed = true
-        elseif item_name == "Boss Enemy" then
-            module.queue.boss = module.queue.boss + 1
+        elseif item_name == "Boss Enemy Trap" or item_name == "Airstrike Trap" or item_name == "Boulder Trap"
+            or item_name == "Lightning Trap" or item_name == "Snowstorm Trap" or item_name == "Wind Trap"
+            or item_name == "Landfall Trap" or item_name == "All Trap" then
+            table.insert(module.queue.traps, item_name)
             changed = true
         elseif item_name == "New Game" then -- Dummy item to not rewrite the logic
             module.queue.dying = nil
@@ -53,8 +55,8 @@ function module.handle_bonus(item_name)
         elseif item_name == "New Save" then -- Dummy item to not rewrite the logic
             module.queue = {}
             module.queue.power = 0
-            module.queue.boss = 0
             module.queue.core = 0
+            module.queue.traps = {}
             changed = true
         elseif item_name == "DeathLink" then
             if Game ~= nil then
@@ -80,13 +82,13 @@ function module.handle_bonus(item_name)
         if module.queue.dying then
             Game:ModifyPowerGrid(-100)
         end
+    end
 
-        if module.queue.boss > 0 then
-            for i = 1, module.queue.boss, 1 do
-                local boss = module.gift_data.boss_enemies[math.random(1, 8)]
-                Board:SpawnPawn(boss)
-            end
-            module.queue.boss = 0
+    local running = true
+    while running and #module.queue.traps > 0 do
+        if not module.trap_handler[module.queue.traps[1]](module.trap_handler) then
+            running = false
+            table.remove(module.queue.traps, 1)
             changed = true
         end
     end
@@ -221,6 +223,9 @@ local function on_slot_connected(slot_data)
 
         module.progress_bar = require(module.mod.scriptPath .. "ap/progress_bar")
         module.progress_bar:init(module)
+
+        module.trap_handler = require(module.mod.scriptPath .. "ap/trap_handler")
+        module.trap_handler:init(module.profile_manager, module.gift_data)
     end
     module.ui:detach()
     module.ui = nil

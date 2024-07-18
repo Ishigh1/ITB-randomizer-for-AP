@@ -15,11 +15,18 @@
     "6777699702823023": "Cataclysm",
     "6777699702823024": "3 Starting Grid Defense",
     "6777699702823025": "2 Starting Grid Power",
-    "6777699702823027": "Boss Enemy"
     "6777699702823026": "1 Starting Grid Power",
     "6777699702823027": "1 Starting Power Core",
     "6777699702823028": "3 Grid Power",
     "6777699702823029": "2 Power Cores",
+    "6777699702823030": "Airstrike Trap",
+    "6777699702823031": "Boulder Trap",
+    "6777699702823032": "Lightning Trap",
+    "6777699702823033": "Snowstorm Trap",
+    "6777699702823034": "Wind Trap",
+    "6777699702823035": "Landfall Trap",
+    "6777699702823036": "Boss Enemy Trap",
+    "6777699702823037": "All Trap"
   },
   "location_id_to_name": {
     "6777699702823011": "Watery Grave",
