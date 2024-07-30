@@ -68,27 +68,27 @@ local function add_env_hazard(self, name, env_class, spaces)
 end
 
 local function add_airstrike(self, spaces)
-    self:add_env_hazard("airstrike", Env_Airstrike, spaces)
+    return self:add_env_hazard("airstrike", Env_Airstrike, spaces)
 end
 
 local function add_final(self, spaces)
-    self:add_env_hazard("final", Env_Final, spaces)
+    return self:add_env_hazard("final", Env_Final, spaces)
 end
 
 local function add_lightning(self, spaces)
-    self:add_env_hazard("lightning", Env_Lightning, spaces)
+    return self:add_env_hazard("lightning", Env_Lightning, spaces)
 end
 
 local function add_snowstorm(self, spaces)
-    self:add_env_hazard("snowstorm", Env_SnowStorm, spaces)
+    return self:add_env_hazard("snowstorm", Env_SnowStorm, spaces)
 end
 
 local function add_wind(self, spaces)
-    self:add_env_hazard("wind", Env_RandomWind, spaces)
+    return self:add_env_hazard("wind", Env_RandomWind, spaces)
 end
 
 local function add_landfall(self, spaces)
-    self:add_env_hazard("landfall", Env_Seismic, spaces)
+    return self:add_env_hazard("landfall", Env_Seismic, spaces)
 end
 
 local function add_boss(self)
@@ -101,13 +101,8 @@ local function add_boss(self)
 end
 
 local function add_all_traps(self)
-    add_airstrike(self)
-    add_final(self)
-    add_lightning(self)
-    add_snowstorm(self)
-    add_wind(self)
-    add_landfall(self)
-    add_boss(self)
+    return add_airstrike(self) and add_final(self) and add_lightning(self) and add_snowstorm(self)
+        and add_wind(self) and add_landfall(self) and add_boss(self)
 end
 
 local function load_traps(self)
