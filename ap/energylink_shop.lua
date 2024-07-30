@@ -1,6 +1,6 @@
 return {
-    price = 5e9,
-    efficiency = .75,
+    price = 5e10,
+    efficiency = .5,
 
     init = function(self, ap_link)
         self.ap_link = ap_link
