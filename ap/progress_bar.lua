@@ -12,20 +12,19 @@ return {
             :decorate { DecoSolid(deco.colors.framebg) }
             :addTo(sdlext.getUiRoot())
 
-        self.progress_bar = root:beginUi()
-            :width(1)
-            :height(1)
-            :decorate { DecoSolid(sdl.rgb(255, 0, 255)) }
 
         self.progress_text = DecoCAlignedText("", font_title, text_settings_title)
-        root
-            :beginUi()
+        root:beginUi()
             :width(1)
             :height(1)
             :posCentered(0.5, 0.5)
             :decorate {
                 self.progress_text
             }
+        self.progress_bar = root:beginUi()
+            :width(1)
+            :height(1)
+            :decorate { DecoSolid(sdl.rgb(255, 0, 255)) }
         self:update()
     end,
 
@@ -44,7 +43,7 @@ return {
         elseif Game == nil then
             self.progress_text:setsurface("Enough achievements to win (" .. current_achievements .. "/"
                 .. max_achievements .. ")")
-        elseif GetDifficulty() >= self.ap_link.difficulty then
+        elseif GetDifficulty() < self.ap_link.difficulty then
             self.progress_text:setsurface("Difficulty too low to win")
         else
             self.progress_text:setsurface("Beat the final island to win!")
