@@ -437,7 +437,7 @@ local function keep_alive()
                     end
                 end
                 if module.profile_manager:get_data("Victory")
-                    and module.ap.ClientStatus ~= module.AP.ClientStatus.GOAL then
+                    and module.AP.ClientStatus ~= module.AP.ClientStatus.GOAL then
                     module.AP:StatusUpdate(module.AP.ClientStatus.GOAL)
                 end
 
