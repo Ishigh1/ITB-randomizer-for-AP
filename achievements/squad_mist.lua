@@ -28,9 +28,8 @@ end
 -- Text : Move Enemies with Control Shot 120 spaces in one game.
 -- Code : Move enemies 120 spaces total
 
-
 local function register_pushes(mission, pawn, old_position)
-    if module.achievement2:is_active() and randomizer_helper.utils.is_player_turn() then
+    if module.achievement2:is_active() and randomizer_helper.utils.is_player_turn() and pawn:IsEnemy() then
         local new_position = pawn:GetSpace()
         local unit_move_distance = math.abs(new_position.x - old_position.x) +
             math.abs(new_position.y - old_position.y)
