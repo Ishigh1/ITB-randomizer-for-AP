@@ -23,7 +23,7 @@ return {
     id = "randomizer",
     name = "Randomizer",
     description = "AP randomizer",
-    version = "0.14.3",
+    version = "0.15.1",
     modApiVersion = "2.9.3",
     requirements = {},
     metadata = metadata,
