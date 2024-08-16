@@ -104,7 +104,7 @@ return {
         "Jelly_Boss",
         "HornetBoss",
         "ScorpionBoss",
-        "SpiderBoss"
+        --"SpiderBoss"
     },
 
     enemy_gift = { -- Spawnables units by island
