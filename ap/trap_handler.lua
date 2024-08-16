@@ -65,6 +65,8 @@ local function add_env_hazard(self, name, env_class, spaces)
     modApi.events.onMissionUpdate:subscribe(mark_hazard)
     modApi.events.onPostEnvironment:subscribe(send_hazard)
     modApi.events.onGameExited:subscribe(unhook)
+
+    return true
 end
 
 local function add_airstrike(self, spaces)
@@ -98,6 +100,7 @@ local function add_boss(self)
 
     local boss = self.gift_data.boss_enemies[math.random(1, 8)]
     Board:SpawnPawn(boss)
+    return true
 end
 
 local function add_all_traps(self)

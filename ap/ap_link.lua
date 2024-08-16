@@ -87,9 +87,11 @@ function module.handle_bonus(item_name)
     local running = true
     while running and #module.queue.traps > 0 do
         if module.trap_handler[module.queue.traps[1]](module.trap_handler) then
+            LOG("Removed trap " .. module.queue.traps[1])
             table.remove(module.queue.traps, 1)
             changed = true
         else
+            LOG("Trap " .. module.queue.traps[1] .. " couldn't be applied")
             running = false
         end
     end

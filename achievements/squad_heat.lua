@@ -28,8 +28,8 @@ end
 -- Code : ^
 
 local function check_fire(mission, pawn, isFire)
-    if module.achievement1:is_active() and pawn:IsEnemy() and isFire then
-        module.achievement1:addProgress(1)
+    if module.achievement2:is_active() and pawn:IsEnemy() and isFire then
+        module.achievement2:addProgress(1)
     end
 end
 
