@@ -15,14 +15,13 @@ local function handle_effect(pawn, effects, skillEffect, method)
     for start_location, target_location in pairs(pushs) do
         local enemy = Board:GetPawn(start_location)
         if enemy:IsEnemy() and space == target_location then
-            mod_loader.mods["randomizer"].pinnacle_a_1 = module.achievement1
             skillEffect[method](skillEffect,
                 "table.insert(mod_loader.mods[\"randomizer\"].pinnacle_a_1.pulled, " .. enemy:GetId() .. ")")
         end
     end
 end
 
-local function register_attack(mission, pawn, weaponId, p1, p2, skillEffect)
+local function register_attack(mission, pawn, weaponId, p1, p2, p3, skillEffect)
     if module.achievement1:is_active() and pawn ~= nil and pawn:IsPlayer() then
         module.achievement1.pulled = {}
         handle_effect(pawn, skillEffect.effect, skillEffect, "AddScript")
@@ -48,10 +47,10 @@ local function reset_pull(action)
     end
 end
 
-function module.initialize_achievement_1(achievement, mod)
+function module.initialize_achievement_1(achievement)
     achievement.objective = true
 
-    modapiext.events.onSkillBuild:subscribe(register_attack)
+    modapiext.events.onFinalEffectBuild:subscribe(register_attack)
     modapiext.events.onPawnKilled:subscribe(test_deadly_pull)
     randomizer_helper.events.on_vek_action_change:subscribe(reset_pull)
 end
@@ -72,22 +71,21 @@ local function handle_effect(effects, skillEffect, method)
         if pawn ~= nil and pawn:IsEnemy() then
             affected = affected + 1
             if affected == 4 then
-                mod_loader.mods["randomizer"].pinnacle_a_2 = module.achievement2
                 skillEffect[method](skillEffect, "mod_loader.mods[\"randomizer\"].pinnacle_a_2:addProgress(true)")
             end
         end
     end
 end
 
-local function register_attack(mission, pawn, weaponId, p1, p2, skillEffect)
+local function register_attack(mission, pawn, weaponId, p1, p2, p3, skillEffect)
     if module.achievement2:is_active() and pawn and pawn:IsPlayer() and _G[weaponId].LaserArt ~= nil then
         handle_effect(skillEffect.effect, skillEffect, "AddScript")
         handle_effect(skillEffect.q_effect, skillEffect, "AddQueuedScript")
     end
 end
 
-function module.initialize_achievement_2(achievement, mod)
-    modapiext.events.onSkillBuild:subscribe(register_attack)
+function module.initialize_achievement_2(achievement)
+    modapiext.events.onFinalEffectBuild:subscribe(register_attack)
 
     achievement.objective = true
 end
@@ -114,7 +112,7 @@ local function reset_shield()
     end
 end
 
-function module.initialize_achievement_3(achievement, mod)
+function module.initialize_achievement_3(achievement)
     achievement.objective = 4
 
     modapiext.events.onPawnIsShielded:subscribe(notice_pawn_shield)

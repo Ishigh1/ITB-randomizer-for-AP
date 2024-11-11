@@ -16,7 +16,7 @@ local function reset_cracks()
     end
 end
 
-function module.initialize_achievement_1(achievement, mod)
+function module.initialize_achievement_1(achievement)
     randomizer_helper.events.on_tile_crack:subscribe(register_crack)
     modApi.events.onMissionStart:subscribe(reset_cracks)
 
@@ -41,7 +41,7 @@ local function reset_falling()
     end
 end
 
-function module.initialize_achievement_2(achievement, mod)
+function module.initialize_achievement_2(achievement)
     modapiext.events.onPawnKilled:subscribe(check_fell)
     modApi.events.onPostStartGame:subscribe(reset_falling)
 
@@ -64,7 +64,7 @@ local function reset_mountains()
     end
 end
 
-function module.initialize_achievement_3(achievement, mod)
+function module.initialize_achievement_3(achievement)
     randomizer_helper.events.on_tile_crack:subscribe(register_mountain_break)
     modApi.events.onPostStartGame:subscribe(reset_mountains)
     achievement.objective = 20

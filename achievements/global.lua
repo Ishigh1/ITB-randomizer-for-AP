@@ -9,11 +9,11 @@ end
 
 local function initialize_achievement(achievement, team, id, name)
     local achievement_module = require(module.path .. string.lower(team))
-    achievement_module["initialize_achievement_" .. id](achievement, module.mod)
+    achievement_module["initialize_achievement_" .. id](achievement)
 
     modApi.achievements:add(achievement)
     achievement = modApi.achievements:get("randomizer", name)
-
+    module.mod[string.lower(team) .. "_" .. id] = achievement
     achievement_module["achievement" .. id] = achievement
     module.profile_manager.register_achievement(achievement, team)
 end

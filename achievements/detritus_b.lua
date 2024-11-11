@@ -16,7 +16,7 @@ local function reset_healing()
     end
 end
 
-function module.initialize_achievement_1(achievement, mod)
+function module.initialize_achievement_1(achievement)
     achievement.objective = 10
     modapiext.events.onPawnHealed:subscribe(check_heal)
     modApi.events.onMissionStart:subscribe(reset_healing)
@@ -52,7 +52,7 @@ local function gain_immortality(island)
     end
 end
 
-function module.initialize_achievement_2(achievement, mod)
+function module.initialize_achievement_2(achievement)
     achievement.objective = 4
 
     modapiext.events.onPawnKilled:subscribe(check_immortality)
@@ -102,23 +102,22 @@ local function handle_effect(effects, skillEffect, method)
 
     for _, damage in pairs(total_damage) do
         if damage >= 8 then
-            mod_loader.mods["randomizer"].detritus_b_3 = module.achievement3
             skillEffect[method](skillEffect, "mod_loader.mods[\"randomizer\"].detritus_b_3:addProgress(true)")
             return
         end
     end
 end
 
-local function register_attack(mission, pawn, weaponId, p1, p2, skillEffect)
+local function register_attack(mission, pawn, weaponId, p1, p2, p3, skillEffect)
     if module.achievement3:is_active() then
         handle_effect(skillEffect.effect, skillEffect, "AddScript")
         handle_effect(skillEffect.q_effect, skillEffect, "AddQueuedScript")
     end
 end
 
-function module.initialize_achievement_3(achievement, mod)
+function module.initialize_achievement_3(achievement)
     achievement.objective = true
-    modapiext.events.onSkillBuild:subscribe(register_attack)
+    modapiext.events.onFinalEffectBuild:subscribe(register_attack)
 end
 
 return module

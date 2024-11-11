@@ -10,7 +10,7 @@ local function register_overpower(overpower)
     end
 end
 
-function module.initialize_achievement_1(achievement, mod)
+function module.initialize_achievement_1(achievement)
     achievement.objective = 2
 
     randomizer_helper.events.on_overload_change:subscribe(register_overpower)
@@ -32,7 +32,7 @@ local function reset_smoke()
     end
 end
 
-function module.initialize_achievement_2(achievement, mod)
+function module.initialize_achievement_2(achievement)
     achievement.objective = 12
 
     modapiext.events.onPawnDamaged:subscribe(check_smoke)
@@ -69,7 +69,7 @@ local function validate_perfect()
     end
 end
 
-function module.initialize_achievement_3(achievement, mod)
+function module.initialize_achievement_3(achievement)
     achievement.objective = true
     randomizer_helper.events.on_building_damaged:subscribe(fail_perfect)
     modapiext.events.onPawnDamaged:subscribe(check_perfect)

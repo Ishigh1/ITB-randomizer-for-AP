@@ -17,7 +17,7 @@ local function reset_drowned()
     end
 end
 
-function module.initialize_achievement_1(achievement, mod)
+function module.initialize_achievement_1(achievement)
     achievement.objective = 3
     modApi.events.onMissionStart:subscribe(reset_drowned)
     modapiext.events.onPawnKilled:subscribe(check_drowned)
@@ -54,7 +54,7 @@ local function check_dash(mission, pawn)
     end
 end
 
-function module.initialize_achievement_2(achievement, mod)
+function module.initialize_achievement_2(achievement)
     achievement.objective = true
     randomizer_helper.events.on_attack:subscribe(save_position)
     modapiext.events.onPawnKilled:subscribe(check_dash)
@@ -64,7 +64,7 @@ end
 -- Text : Complete 1st Corporate Island with the Rift Walkers squad
 -- Code : Complete any Island with the Rift Walkers squad
 
-function module.initialize_achievement_3(achievement, mod)
+function module.initialize_achievement_3(achievement)
     modApi.events.onIslandLeft:subscribe(function(island)
         if module.achievement3:is_active() then
             module.achievement3:addProgress(true)

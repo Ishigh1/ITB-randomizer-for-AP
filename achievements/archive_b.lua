@@ -14,7 +14,6 @@ local function register_armor(skillEffect, effects, f)
         local damage = space_damage.iDamage
 
         if damage > 0 and damage < DAMAGE_ZERO then
-            mod_loader.mods["randomizer"].archive_b_1 = module.achievement1
             local previous_space_damage = effects:index(i)
             previous_space_damage.sScript =
                 "local pawn = Board:GetPawn(Point(" .. space_damage.loc.x .. ", " .. space_damage.loc.y .. "))\n"
@@ -26,7 +25,7 @@ local function register_armor(skillEffect, effects, f)
     end
 end
 
-local function register_attack(mission, pawn, weaponId, p1, p2, skillEffect)
+local function register_attack(mission, pawn, weaponId, p1, p2, p3, skillEffect)
     if module.achievement1:is_active() then
         register_armor(skillEffect, skillEffect.effect, skillEffect.AddScript)
         register_armor(skillEffect, skillEffect.q_effect, skillEffect.AddQueuedScript)
@@ -38,7 +37,7 @@ local function handle_tentacles(action_id)
         local enemies = extract_table(Board:GetPawns(TEAM_ENEMY))
         local tentacle_vek = false
         for i, pawn_id in ipairs(enemies) do
-            local pawn = Board:GetPawn(Board:GetPawnSpace(pawn_id))
+            local pawn = Board:GetPawn(pawn_id)
             if pawn:GetMechName() == "Psion Tyrant" then
                 tentacle_vek = true
                 break
@@ -51,7 +50,7 @@ local function handle_tentacles(action_id)
 
         local allies = extract_table(Board:GetPawns(TEAM_PLAYER))
         for i, pawn_id in ipairs(allies) do
-            local pawn = Board:GetPawn(Board:GetPawnSpace(pawn_id))
+            local pawn = Board:GetPawn(pawn_id)
             if pawn:IsArmor() and not pawn:IsAcid() and not pawn:IsShield() then
                 module.achievement1:addProgress(1)
             end
@@ -65,10 +64,10 @@ local function reset_armor()
     end
 end
 
-function module.initialize_achievement_1(achievement, mod)
+function module.initialize_achievement_1(achievement)
     achievement.objective = 5
 
-    modapiext.events.onSkillBuild:subscribe(register_attack)
+    modapiext.events.onFinalEffectBuild:subscribe(register_attack)
     randomizer_helper.events.on_vek_action_change:subscribe(handle_tentacles)
     modApi.events.onMissionStart:subscribe(reset_armor)
 end
@@ -97,7 +96,7 @@ local function reset_team_kills()
     end
 end
 
-function module.initialize_achievement_2(achievement, mod)
+function module.initialize_achievement_2(achievement)
     achievement.objective = 4
 
     modapiext.events.onPawnKilled:subscribe(check_team_kill)
@@ -120,7 +119,7 @@ local function reset_pushes()
     end
 end
 
-function module.initialize_achievement_3(achievement, mod)
+function module.initialize_achievement_3(achievement)
     modapiext.events.onPawnPositionChanged:subscribe(register_pushes)
     randomizer_helper.events.on_attack:subscribe(reset_pushes)
     achievement.objective = 3

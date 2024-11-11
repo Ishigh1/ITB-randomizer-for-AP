@@ -25,7 +25,7 @@ local function reset_block()
     end
 end
 
-function module.initialize_achievement_1(achievement, mod)
+function module.initialize_achievement_1(achievement)
     achievement.objective = 30
 
     GameEvents.onSpawnBlocked:subscribe(notice_block)
@@ -49,7 +49,7 @@ local function reset_kills()
     end
 end
 
-function module.initialize_achievement_2(achievement, mod)
+function module.initialize_achievement_2(achievement)
     achievement.objective = 7
 
     modapiext.events.onPawnKilled:subscribe(count_kill)
@@ -123,7 +123,7 @@ local function handle_effect(pawn, effects, skillEffect, method)
     end
 end
 
-local function register_attack(mission, pawn, weaponId, p1, p2, skillEffect)
+local function register_attack(mission, pawn, weaponId, p1, p2, p3, skillEffect)
     if module.achievement3:is_active() and pawn ~= nil and pawn:IsPlayer() then
         module.achievement3.pierce_victims = {}
         handle_effect(pawn, skillEffect.effect, skillEffect, "AddScript")
@@ -159,9 +159,9 @@ local function new_unit(mission, pawn)
     end
 end
 
-function module.initialize_achievement_3(achievement, mod)
+function module.initialize_achievement_3(achievement)
     achievement.objective = true
-    modapiext.events.onSkillBuild:subscribe(register_attack)
+    modapiext.events.onFinalEffectBuild:subscribe(register_attack)
     modapiext.events.onPawnKilled:subscribe(check_pierce)
     randomizer_helper.events.on_vek_action_change:subscribe(reset_pierce)
     modapiext.events.onPawnTracked:subscribe(new_unit)

@@ -16,7 +16,7 @@ local function reset_healing()
     end
 end
 
-function module.initialize_achievement_1(achievement, mod)
+function module.initialize_achievement_1(achievement)
     modapiext.events.onPawnHealed:subscribe(check_heal)
     modApi.events.onPostStartGame:subscribe(reset_healing)
     modApi.events.onIslandLeft:subscribe(reset_healing)
@@ -43,7 +43,7 @@ local function reset_pushes()
     end
 end
 
-function module.initialize_achievement_2(achievement, mod)
+function module.initialize_achievement_2(achievement)
     modapiext.events.onPawnPositionChanged:subscribe(register_pushes)
     modApi.events.onPostStartGame:subscribe(reset_pushes)
 
@@ -92,23 +92,22 @@ local function handle_effect(effects, skillEffect, method)
 
     for _, damage in pairs(total_damage) do
         if damage >= 4 then
-            mod_loader.mods["randomizer"].squad_mist_3 = module.achievement3
             skillEffect[method](skillEffect, "mod_loader.mods[\"randomizer\"].squad_mist_3:addProgress(true)")
             return
         end
     end
 end
 
-local function register_attack(mission, pawn, weaponId, p1, p2, skillEffect)
+local function register_attack(mission, pawn, weaponId, p1, p2, p3, skillEffect)
     if module.achievement3:is_active() then
         handle_effect(skillEffect.effect, skillEffect, "AddScript")
         handle_effect(skillEffect.q_effect, skillEffect, "AddQueuedScript")
     end
 end
 
-function module.initialize_achievement_3(achievement, mod)
+function module.initialize_achievement_3(achievement)
     achievement.objective = true
-    modapiext.events.onSkillBuild:subscribe(register_attack)
+    modapiext.events.onFinalEffectBuild:subscribe(register_attack)
 end
 
 return module

@@ -16,7 +16,7 @@ local function new_unit(mission, pawn)
     end
 end
 
-function module.initialize_achievement_1(achievement, mod)
+function module.initialize_achievement_1(achievement)
     modApi.events.onPostStartGame:subscribe(reset_breeding)
     modApi.events.onIslandLeft:subscribe(reset_breeding)
     modapiext.events.onPawnTracked:subscribe(new_unit)
@@ -46,7 +46,7 @@ local function reset_pushes()
     end
 end
 
-function module.initialize_achievement_2(achievement, mod)
+function module.initialize_achievement_2(achievement)
     modapiext.events.onPawnPositionChanged:subscribe(register_pushes)
     randomizer_helper.events.on_attack:subscribe(reset_pushes)
 
@@ -69,7 +69,7 @@ local function reset_kills()
     end
 end
 
-function module.initialize_achievement_3(achievement, mod)
+function module.initialize_achievement_3(achievement)
     modapiext.events.onPawnKilled:subscribe(register_kill)
     randomizer_helper.events.on_attack:subscribe(reset_kills)
 

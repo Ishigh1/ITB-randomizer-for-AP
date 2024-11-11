@@ -66,7 +66,12 @@ return function(ap_link, seed_name, slot)
             module.set_achievement_data(achievement, name, value)
         end
 
+        local isComplete = achievement.isComplete
+        function achievement.isComplete()
+            return false
+        end
         achievement:resetProgress()
+        achievement.isComplete = isComplete
 
         function achievement:addReward()
             ap_link.complete_location(self.name)

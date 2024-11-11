@@ -16,7 +16,7 @@ local function reset_cryo()
     end
 end
 
-function module.initialize_achievement_1(achievement, mod)
+function module.initialize_achievement_1(achievement)
     achievement.objective = 4
 
     randomizer_helper.events.on_attack:subscribe(check_cryo)
@@ -42,7 +42,7 @@ local function kill_janus(mission, pawn)
     end
 end
 
-function module.initialize_achievement_2(achievement, mod)
+function module.initialize_achievement_2(achievement)
     achievement.objective = 3
 
     randomizer_helper.events.on_attack:subscribe(check_janus)
@@ -83,7 +83,7 @@ local function reset_pacifist()
     end
 end
 
-function module.initialize_achievement_3(achievement, mod)
+function module.initialize_achievement_3(achievement)
     achievement.objective = true
     modapiext.events.onPawnKilled:subscribe(not_very_pacifist)
     modApi.events.onMissionEnd:subscribe(become_pacifist)

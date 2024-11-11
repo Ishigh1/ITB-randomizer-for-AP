@@ -16,7 +16,7 @@ local function reset_boosts()
     end
 end
 
-function module.initialize_achievement_1(achievement, mod)
+function module.initialize_achievement_1(achievement)
     modapiext.events.onPawnIsBoosted:subscribe(check_boost)
     modApi.events.onMissionStart:subscribe(reset_boosts)
 
@@ -34,12 +34,12 @@ local function check_fire(mission, pawn, isFire)
 end
 
 local function reset_fire()
-    if module.achievement2:is_active() then
+    if module.achievement2:is_active() and module.achievement2:getProgress() > 0 then
         module.achievement2:resetProgress()
     end
 end
 
-function module.initialize_achievement_2(achievement, mod)
+function module.initialize_achievement_2(achievement)
     modapiext.events.onPawnIsFire:subscribe(check_fire)
     randomizer_helper.events.on_attack:subscribe(reset_fire)
 
@@ -50,9 +50,9 @@ end
 -- Text : Deal 8 damage with a single activation of the Quick-Fire Rockets.
 -- Code : Deal 8 damages with a single attack
 
-local function handle_effect(effects, skillEffect, method)
+local function handle_effect(effects)
     if effects == nil then
-        return
+        return 0
     end
 
     local total_damage = 0
@@ -60,13 +60,12 @@ local function handle_effect(effects, skillEffect, method)
         local space_damage = effects:index(i)
         local loc = space_damage.loc
         local pawn = Board:GetPawn(loc)
-        if pawn ~= nil and pawn:IsEnemy() then
+        if pawn ~= nil then
             local damage = space_damage.iDamage
             if damage > 0 and damage < DAMAGE_ZERO then
                 if pawn:IsAcid() then
                     damage = damage * 2
                 end
-
                 total_damage = total_damage + damage
             end
         end
@@ -82,22 +81,26 @@ local function handle_effect(effects, skillEffect, method)
         end
     end
 
-    if total_damage >= 8 then
-        mod_loader.mods["randomizer"].squad_heat_3 = module.achievement3
-        skillEffect[method](skillEffect, "mod_loader.mods[\"randomizer\"].squad_heat_3:addProgress(true)")
-        return
+    return total_damage
+end
+
+local function final_register_attack(mission, pawn, weaponId, p1, p2, p3, skillEffect)
+    if module.achievement3:is_active() and pawn:IsPlayer() then
+        local total_damage = handle_effect(skillEffect.effect)
+        if total_damage >= 2 then
+            skillEffect:AddScript("mod_loader.mods[\"randomizer\"].squad_heat_3:addProgress(true)")
+            return
+        end
+        total_damage = total_damage + handle_effect(skillEffect.q_effect)
+        if total_damage >= 2 then
+            skillEffect:AddQueuedScript("mod_loader.mods[\"randomizer\"].squad_heat_3:addProgress(true)")
+            return
+        end
     end
 end
 
-local function register_attack(mission, pawn, weaponId, p1, p2, skillEffect)
-    if module.achievement3:is_active() then
-        handle_effect(skillEffect.effect, skillEffect, "AddScript")
-        handle_effect(skillEffect.q_effect, skillEffect, "AddQueuedScript")
-    end
-end
-
-function module.initialize_achievement_3(achievement, mod)
-    modapiext.events.onSkillBuild:subscribe(register_attack)
+function module.initialize_achievement_3(achievement)
+    modapiext.events.onFinalEffectBuild:subscribe(final_register_attack)
 
     achievement.objective = true
 end

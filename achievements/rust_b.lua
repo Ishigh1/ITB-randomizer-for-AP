@@ -10,7 +10,7 @@ local function check_teleport(mission, pawn, weapon_id, p1, p2)
     end
 end
 
-function module.initialize_achievement_1(achievement, mod)
+function module.initialize_achievement_1(achievement)
     achievement.objective = true
 
     randomizer_helper.events.on_attack:subscribe(check_teleport)
@@ -36,7 +36,7 @@ local function reset_fire()
     end
 end
 
-function module.initialize_achievement_2(achievement, mod)
+function module.initialize_achievement_2(achievement)
     achievement.objective = 12
 
     randomizer_helper.events.on_tile_fire:subscribe(count_fire)
@@ -72,7 +72,7 @@ local function reset_pawn_fire()
     end
 end
 
-function module.initialize_achievement_3(achievement, mod)
+function module.initialize_achievement_3(achievement)
     achievement.objective = true
 
     modapiext.events.onPawnIsFire:subscribe(pawn_fire)

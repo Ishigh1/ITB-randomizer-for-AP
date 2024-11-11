@@ -19,7 +19,6 @@ local function handle_effect(effects, skillEffect, method)
             affected = affected + 1
             locs[loc_id] = 1
             if affected == 10 then
-                mod_loader.mods["randomizer"].pinnacle_a_1 = module.achievement1
                 skillEffect[method](skillEffect, "mod_loader.mods[\"randomizer\"].pinnacle_a_1:addProgress(true)")
                 return
             end
@@ -27,17 +26,17 @@ local function handle_effect(effects, skillEffect, method)
     end
 end
 
-local function register_attack(mission, pawn, weaponId, p1, p2, skillEffect)
+local function register_attack(mission, pawn, weaponId, p1, p2, p3, skillEffect)
     if module.achievement1:is_active() then
         handle_effect(skillEffect.effect, skillEffect, "AddScript")
         handle_effect(skillEffect.q_effect, skillEffect, "AddQueuedScript")
     end
 end
 
-function module.initialize_achievement_1(achievement, mod)
+function module.initialize_achievement_1(achievement)
     achievement.objective = true
 
-    modapiext.events.onSkillBuild:subscribe(register_attack)
+    modapiext.events.onFinalEffectBuild:subscribe(register_attack)
 end
 
 -- ACHIEVEMENT 2 : Lightning War
@@ -62,7 +61,7 @@ local function check_speedrun()
     end
 end
 
-function module.initialize_achievement_2(achievement, mod)
+function module.initialize_achievement_2(achievement)
     modApi.events.onPostStartGame:subscribe(reset_speedrun)
     modApi.events.onIslandLeft:subscribe(check_speedrun)
     achievement.objective = 2
@@ -84,7 +83,7 @@ local function reset_block(action)
     end
 end
 
-function module.initialize_achievement_3(achievement, mod)
+function module.initialize_achievement_3(achievement)
     achievement.objective = 4
     GameEvents.onSpawnBlocked:subscribe(notice_block)
     randomizer_helper.events.on_vek_action_change:subscribe(reset_block)
