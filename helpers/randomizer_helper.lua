@@ -12,8 +12,8 @@ randomizer_helper.events.on_tile_shield = Event()
 randomizer_helper.events.on_tile_crack = Event()
 randomizer_helper.events.on_terrain_change = Event()
 randomizer_helper.events.on_game_lost = Event()
-
 randomizer_helper.events.on_attack = Event()
+randomizer_helper.events.on_build = Event()
 
 -- Things might look weird because I have to take in account the fact that most hooks in-game happen one frame after attack order changes
 randomizer_helper.tracking.current_action = ATTACK_ORDER_IDLE
@@ -121,6 +121,15 @@ local function register_attack(mission, pawn, weapon_id, p1, p2)
     randomizer_helper.events.on_attack:dispatch(mission, pawn, weapon_id, p1, p2)
 end
 
+local function register_build(mission, pawn, weaponId, p1, p2, skillEffect)
+    if not _G[weaponId].TwoClick then
+        randomizer_helper.events.on_build:dispatch(mission, pawn, weaponId, p1, p2, nil, skillEffect)
+    end
+end
+
+local function register_build_final(mission, pawn, weaponId, p1, p2, p3, skillEffect)
+    randomizer_helper.events.on_build:dispatch(mission, pawn, weaponId, p1, p2, p3, skillEffect)
+end
 
 modApi.events.onFrameDrawn:subscribe(register_game_changes)
 modApi.events.onMissionStart:subscribe(reset_board_tracking)
@@ -133,6 +142,9 @@ modapiext.events.onSkillStart:subscribe(register_attack)
 modapiext.events.onFinalEffectStart:subscribe(register_attack)
 modapiext.events.onQueuedSkillStart:subscribe(register_attack)
 modapiext.events.onQueuedFinalEffectStart:subscribe(register_attack)
+
+modapiext.events.onSkillBuild:subscribe(register_build)
+modapiext.events.onFinalEffectBuild:subscribe(register_build_final)
 
 function randomizer_helper.utils.compute_push(effects)
     local pushs = {}
@@ -163,9 +175,11 @@ function randomizer_helper.utils.compute_push(effects)
 end
 
 function randomizer_helper.utils.is_player_turn()
-    return randomizer_helper.tracking.current_turn == TEAM_PLAYER and randomizer_helper.tracking.current_action == ATTACK_ORDER_IDLE
+    return randomizer_helper.tracking.current_turn == TEAM_PLAYER and
+    randomizer_helper.tracking.current_action == ATTACK_ORDER_IDLE
 end
 
 function randomizer_helper.utils.is_enemy_turn()
-    return randomizer_helper.tracking.current_turn == TEAM_ENEMY and randomizer_helper.tracking.current_action == ATTACK_ORDER_IDLE
+    return randomizer_helper.tracking.current_turn == TEAM_ENEMY and
+    randomizer_helper.tracking.current_action == ATTACK_ORDER_IDLE
 end

@@ -76,21 +76,26 @@ local function handle_effect(pawn, effects, skillEffect, method)
         local loc = space_damage.loc
         local target = Board:GetPawn(loc)
         if target ~= nil then
+            LOG("Powered Blast : touching " .. tostring(target:GetId()))
             for _, id in pairs(new_units) do
                 if (target:GetId() == id) then
                     if (loc.x == base_space.x) then
                         local yDiff = base_space.y - loc.y
                         if yDiff > 0 and yDiff < up then
                             up = yDiff
+                            LOG("Found pierced ally up")
                         elseif yDiff < 0 and -yDiff < down then
                             down = -yDiff
+                            LOG("Found pierced ally down")
                         end
                     elseif (loc.y == base_space.y) then
                         local xDiff = base_space.x - loc.x
                         if xDiff > 0 and xDiff < left then
                             left = xDiff
+                            LOG("Found pierced ally left")
                         elseif xDiff < 0 and -xDiff < right then
                             right = -xDiff
+                            LOG("Found pierced ally right")
                         end
                     end
                     break
@@ -161,7 +166,7 @@ end
 
 function module.initialize_achievement_3(achievement)
     achievement.objective = true
-    modapiext.events.onFinalEffectBuild:subscribe(register_attack)
+    randomizer_helper.events.on_build:subscribe(register_attack)
     modapiext.events.onPawnKilled:subscribe(check_pierce)
     randomizer_helper.events.on_vek_action_change:subscribe(reset_pierce)
     modapiext.events.onPawnTracked:subscribe(new_unit)

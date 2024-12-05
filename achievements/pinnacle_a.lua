@@ -50,7 +50,7 @@ end
 function module.initialize_achievement_1(achievement)
     achievement.objective = true
 
-    modapiext.events.onFinalEffectBuild:subscribe(register_attack)
+    randomizer_helper.events.on_build:subscribe(register_attack)
     modapiext.events.onPawnKilled:subscribe(test_deadly_pull)
     randomizer_helper.events.on_vek_action_change:subscribe(reset_pull)
 end
@@ -58,7 +58,7 @@ end
 -- ACHIEVEMENT 2 : Glittering C-Beam
 -- Text : Hit 4 enemies with a single laser
 -- Code : Have 4 enemies in your attack area with a laser weapon
-local function handle_effect(effects, skillEffect, method)
+local function handle_effect_2(effects, skillEffect, method)
     if effects == nil then
         return
     end
@@ -77,15 +77,15 @@ local function handle_effect(effects, skillEffect, method)
     end
 end
 
-local function register_attack(mission, pawn, weaponId, p1, p2, p3, skillEffect)
+local function register_attack_2(mission, pawn, weaponId, p1, p2, p3, skillEffect)
     if module.achievement2:is_active() and pawn and pawn:IsPlayer() and _G[weaponId].LaserArt ~= nil then
-        handle_effect(skillEffect.effect, skillEffect, "AddScript")
-        handle_effect(skillEffect.q_effect, skillEffect, "AddQueuedScript")
+        handle_effect_2(skillEffect.effect, skillEffect, "AddScript")
+        handle_effect_2(skillEffect.q_effect, skillEffect, "AddQueuedScript")
     end
 end
 
 function module.initialize_achievement_2(achievement)
-    modapiext.events.onFinalEffectBuild:subscribe(register_attack)
+    randomizer_helper.events.on_build:subscribe(register_attack_2)
 
     achievement.objective = true
 end

@@ -100,7 +100,7 @@ local function final_register_attack(mission, pawn, weaponId, p1, p2, p3, skillE
 end
 
 function module.initialize_achievement_3(achievement)
-    modapiext.events.onFinalEffectBuild:subscribe(final_register_attack)
+    randomizer_helper.events.on_build:subscribe(final_register_attack)
 
     achievement.objective = true
 end

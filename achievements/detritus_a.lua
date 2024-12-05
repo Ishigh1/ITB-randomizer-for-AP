@@ -36,7 +36,7 @@ end
 function module.initialize_achievement_1(achievement)
     achievement.objective = true
 
-    modapiext.events.onFinalEffectBuild:subscribe(register_attack)
+    randomizer_helper.events.on_build:subscribe(register_attack)
 end
 
 -- ACHIEVEMENT 2 : Lightning War
