@@ -25,14 +25,7 @@ local function register_armor(skillEffect, effects, f)
     end
 end
 
-local function register_attack(mission, pawn, weaponId, p1, p2, skillEffect)
-    if module.achievement1:is_active() and not _G[weaponId].TwoClick then
-        register_armor(skillEffect, skillEffect.effect, skillEffect.AddScript)
-        register_armor(skillEffect, skillEffect.q_effect, skillEffect.AddQueuedScript)
-    end
-end
-
-local function register_attack_final(mission, pawn, weaponId, p1, p2, p3, skillEffect)
+local function register_attack(mission, pawn, weaponId, p1, p2, p3, skillEffect)
     if module.achievement1:is_active() then
         register_armor(skillEffect, skillEffect.effect, skillEffect.AddScript)
         register_armor(skillEffect, skillEffect.q_effect, skillEffect.AddQueuedScript)
