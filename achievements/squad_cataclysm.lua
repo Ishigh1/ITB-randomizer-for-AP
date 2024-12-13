@@ -65,7 +65,7 @@ local function reset_mountains()
 end
 
 function module.initialize_achievement_3(achievement)
-    randomizer_helper.events.on_tile_crack:subscribe(register_mountain_break)
+    randomizer_helper.events.on_terrain_change:subscribe(register_mountain_break)
     modApi.events.onPostStartGame:subscribe(reset_mountains)
     achievement.objective = 20
 end

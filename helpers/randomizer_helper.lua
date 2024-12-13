@@ -84,8 +84,8 @@ local function register_game_changes()
 
             local new_terrain = Board:GetTerrain(point)
             if new_terrain ~= old_content.terrain then
-                old_content.terrain = new_terrain
                 randomizer_helper.events.on_terrain_change:dispatch(old_content.terrain, new_terrain)
+                old_content.terrain = new_terrain
             end
         end
     else
