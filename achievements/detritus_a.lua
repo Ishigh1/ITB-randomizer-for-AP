@@ -19,7 +19,7 @@ local function handle_effect(effects, skillEffect, method)
             affected = affected + 1
             locs[loc_id] = 1
             if affected == 10 then
-                skillEffect[method](skillEffect, "mod_loader.mods[\"randomizer\"].pinnacle_a_1:addProgress(true)")
+                skillEffect[method](skillEffect, "mod_loader.mods[\"randomizer\"].detritus_a_1:addProgress(true)")
                 return
             end
         end
