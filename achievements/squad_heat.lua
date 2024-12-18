@@ -28,7 +28,7 @@ end
 -- Code : ^
 
 local function check_fire(mission, pawn, isFire)
-    if module.achievement2:is_active() and pawn:IsEnemy() and isFire then
+    if module.achievement2:is_active() and pawn:IsEnemy() and isFire and randomizer_helper.utils.is_player_turn() then
         module.achievement2:addProgress(1)
     end
 end
@@ -87,12 +87,12 @@ end
 local function final_register_attack(mission, pawn, weaponId, p1, p2, p3, skillEffect)
     if module.achievement3:is_active() and pawn:IsPlayer() then
         local total_damage = handle_effect(skillEffect.effect)
-        if total_damage >= 2 then
+        if total_damage >= 8 then
             skillEffect:AddScript("mod_loader.mods[\"randomizer\"].squad_heat_3:addProgress(true)")
             return
         end
         total_damage = total_damage + handle_effect(skillEffect.q_effect)
-        if total_damage >= 2 then
+        if total_damage >= 8 then
             skillEffect:AddQueuedScript("mod_loader.mods[\"randomizer\"].squad_heat_3:addProgress(true)")
             return
         end
