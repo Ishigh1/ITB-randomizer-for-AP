@@ -15,10 +15,10 @@ end
 
 local function apply_grid_bonuses()
     if module.mod.profile_manager:get_data("applied_grid") == nil then
-        LOG("reset bonuses")
+        LOG("Resetting bonuses")
         reset_grid_appliance()
     else
-        LOG("available bonuses")
+        LOG("Applying bonuses")
         randomizer_helper.memedit.set_base_def((module.ap_link.unlocked_items["3 Starting Grid Defense"] or 0) * 3)
         module.ap_link.handle_bonus()
     end

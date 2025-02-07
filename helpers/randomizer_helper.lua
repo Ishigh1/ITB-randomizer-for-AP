@@ -174,12 +174,13 @@ function randomizer_helper.utils.compute_push(effects)
     return pushs
 end
 
-function randomizer_helper.utils.is_player_turn()
+function randomizer_helper.utils.is_player_turn(mission)
     return randomizer_helper.tracking.current_turn == TEAM_PLAYER and
-    randomizer_helper.tracking.current_action == ATTACK_ORDER_IDLE
+        randomizer_helper.tracking.current_action == ATTACK_ORDER_IDLE and
+        mission.deployment and mission.deployment.phase == 2
 end
 
 function randomizer_helper.utils.is_enemy_turn()
     return randomizer_helper.tracking.current_turn == TEAM_ENEMY and
-    randomizer_helper.tracking.current_action == ATTACK_ORDER_IDLE
+        randomizer_helper.tracking.current_action == ATTACK_ORDER_IDLE
 end

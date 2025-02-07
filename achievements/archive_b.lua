@@ -108,7 +108,7 @@ end
 -- Code : See 3 enemy moves following an attack
 
 local function register_pushes(mission, pawn)
-    if module.achievement3:is_active() and pawn:IsEnemy() and randomizer_helper.utils.is_player_turn() then
+    if module.achievement3:is_active() and pawn:IsEnemy() and randomizer_helper.utils.is_player_turn(mission) then
         module.achievement3:addProgress(1)
     end
 end

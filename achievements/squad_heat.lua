@@ -28,7 +28,7 @@ end
 -- Code : ^
 
 local function check_fire(mission, pawn, isFire)
-    if module.achievement2:is_active() and pawn:IsEnemy() and isFire and randomizer_helper.utils.is_player_turn() then
+    if module.achievement2:is_active() and pawn:IsEnemy() and isFire and randomizer_helper.utils.is_player_turn(mission) then
         module.achievement2:addProgress(1)
     end
 end

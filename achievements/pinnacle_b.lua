@@ -37,7 +37,7 @@ local function check_janus(mission, pawn, weapon_id, p1, p2)
 end
 
 local function kill_janus(mission, pawn)
-    if module.janus and module.achievement2:is_active() and pawn:IsEnemy() and randomizer_helper.utils.is_player_turn() then
+    if module.janus and module.achievement2:is_active() and pawn:IsEnemy() and randomizer_helper.utils.is_player_turn(mission) then
         module.achievement2:addProgress(1)
     end
 end

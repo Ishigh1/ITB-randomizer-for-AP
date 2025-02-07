@@ -137,7 +137,7 @@ local function register_attack(mission, pawn, weaponId, p1, p2, p3, skillEffect)
 end
 
 local function check_pierce(mission, pawn)
-    if module.achievement3:is_active() and randomizer_helper.utils.is_player_turn() then
+    if module.achievement3:is_active() and randomizer_helper.utils.is_player_turn(mission) then
         local id = pawn:GetId()
         for _, v in pairs(module.achievement3.pierce_victims) do
             if v == id then

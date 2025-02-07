@@ -30,7 +30,7 @@ end
 
 
 local function register_pushes(mission, pawn)
-    if module.achievement2:is_active() and randomizer_helper.utils.is_player_turn() then
+    if module.achievement2:is_active() and randomizer_helper.utils.is_player_turn(mission) then
         local moved_units = module.achievement2.moved_units
         if moved_units ~= nil and not moved_units[pawn:GetId()] then
             moved_units[pawn:GetId()] = true
@@ -49,6 +49,7 @@ end
 function module.initialize_achievement_2(achievement)
     modapiext.events.onPawnPositionChanged:subscribe(register_pushes)
     randomizer_helper.events.on_attack:subscribe(reset_pushes)
+    modApi.events.onMissionStart:subscribe(reset_pushes)
 
     achievement.objective = 4
 end
@@ -58,7 +59,7 @@ end
 -- Code : Kill 3 Enemies with 1 shot.
 
 local function register_kill(mission, pawn)
-    if module.achievement3:is_active() and pawn:IsEnemy() and randomizer_helper.utils.is_player_turn() then
+    if module.achievement3:is_active() and pawn:IsEnemy() and randomizer_helper.utils.is_player_turn(mission) then
         module.achievement3:addProgress(1)
     end
 end

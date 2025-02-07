@@ -38,7 +38,7 @@ end
 
 local function check_dash(mission, pawn)
     if module.achievement2:is_active() and module.ramming ~= nil and
-        pawn:IsEnemy() and randomizer_helper.utils.is_player_turn() then
+        pawn:IsEnemy() and randomizer_helper.utils.is_player_turn(mission) then
         local unit_position = module.ramming.pos
         local new_position = Board:GetPawn(module.ramming.id):GetSpace()
         local unit_move_distance = math.abs(new_position.x - unit_position.x) +
