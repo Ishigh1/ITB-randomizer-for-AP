@@ -4,14 +4,19 @@ randomizer_helper = {
     utils = {},
     tools = {}
 }
+
 randomizer_helper.events.on_vek_action_change = Event()
 randomizer_helper.events.on_overload_change = Event()
 randomizer_helper.events.on_building_damaged = Event()
+
 randomizer_helper.events.on_tile_fire = Event()
 randomizer_helper.events.on_tile_shield = Event()
 randomizer_helper.events.on_tile_crack = Event()
 randomizer_helper.events.on_terrain_change = Event()
-randomizer_helper.events.on_game_lost = Event()
+
+randomizer_helper.events.on_game_lost = Event() -- To be implemented
+randomizer_helper.events.on_island_completed = Event()
+
 randomizer_helper.events.on_attack = Event()
 randomizer_helper.events.on_build = Event()
 

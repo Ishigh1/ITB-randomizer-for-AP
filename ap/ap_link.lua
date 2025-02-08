@@ -492,13 +492,16 @@ function GetText(id, r1, r2, r3)
     elseif id == "Store_BuyTitle" then
         module.energylink_shop:show()
     elseif id == "Button_Select_Mission_Store" then
-        local islands_secured = Game:GetSector()
-        if islands_secured > module.islands_secured then
-            module.profile_manager:set_data("islands_secured", islands_secured)
-            module.islands_secured = islands_secured
-            module.complete_location("Island " .. islands_secured .. " cleared")
+        if Game then
+            local islands_secured = Game:GetSector()
+            if islands_secured > module.islands_secured then
+                module.profile_manager:set_data("islands_secured", islands_secured)
+                module.islands_secured = islands_secured
+                module.complete_location("Island " .. islands_secured .. " cleared")
+                randomizer_helper.events.on_island_completed:dispatch(islands_secured)
+            end
+            module.energylink_shop:hide() -- todo : also hide the shop if you save&quit while having the shop open
         end
-        module.energylink_shop:hide()
     end
     return old_get_text(id, r1, r2, r3)
 end

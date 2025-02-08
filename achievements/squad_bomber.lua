@@ -29,7 +29,7 @@ function module.initialize_achievement_1(achievement)
     achievement.objective = 30
 
     GameEvents.onSpawnBlocked:subscribe(notice_block)
-    modApi.events.onIslandLeft:subscribe(fail_block)
+    randomizer_helper.events.on_island_completed:subscribe(fail_block)
     modApi.events.onPostStartGame:subscribe(reset_block)
 end
 

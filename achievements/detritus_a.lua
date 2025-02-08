@@ -50,11 +50,11 @@ local function reset_speedrun()
     end
 end
 
-local function check_speedrun()
+local function check_speedrun(island)
     if module.achievement2:is_active() then
         local seconds = (os.time() - module.achievement2:get_data("start"))
         if (seconds < 1800) then
-            module.achievement2:addProgress(1)
+            module.achievement2:setProgress(island)
         else
             LOG("Wasn't fast enough for Lightning War : took " .. seconds .. " seconds")
         end
@@ -63,7 +63,7 @@ end
 
 function module.initialize_achievement_2(achievement)
     modApi.events.onPostStartGame:subscribe(reset_speedrun)
-    modApi.events.onIslandLeft:subscribe(check_speedrun)
+    randomizer_helper.events.on_island_completed:subscribe(check_speedrun)
     achievement.objective = 2
 end
 

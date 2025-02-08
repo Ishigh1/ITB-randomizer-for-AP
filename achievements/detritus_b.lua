@@ -24,7 +24,7 @@ end
 
 -- ACHIEVEMENT 2 : Immortal
 -- Text : Finish 4 Corporate Islands without a Mech being destroyed at the end of a battle
--- Code : Finish 4 Corporate Islands without an ally being destroyed
+-- Code : Finish 4 Corporate Islands without a Mech being destroyed
 
 local function mortality()
     module.achievement2.text = GetVanillaText("Ach_Detritus_B_2_Text") .. "\n" ..
@@ -32,7 +32,7 @@ local function mortality()
 end
 
 local function check_immortality(mission, pawn)
-    if module.achievement2:is_active() and pawn:IsPlayer() then
+    if module.achievement2:is_active() and pawn:IsMech() then
         mortality()
         module.achievement2:set_data("failed_immortality", true)
     end
@@ -48,7 +48,7 @@ end
 
 local function gain_immortality(island)
     if module.achievement2:is_active() and module.achievement2:get_data("Ach_Detritus_B_2_failed_immortality") == nil then
-        module.achievement2:addProgress(1)
+        module.achievement2:setProgress(island)
     end
 end
 
@@ -57,7 +57,7 @@ function module.initialize_achievement_2(achievement)
 
     modapiext.events.onPawnKilled:subscribe(check_immortality)
     modApi.events.onPostStartGame:subscribe(regain_immortality)
-    modApi.events.onIslandLeft:subscribe(gain_immortality)
+    randomizer_helper.events.on_island_completed:subscribe(gain_immortality)
 end
 
 -- ACHIEVEMENT 3 : Overkill
