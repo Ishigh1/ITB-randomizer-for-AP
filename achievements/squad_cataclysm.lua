@@ -44,6 +44,7 @@ end
 function module.initialize_achievement_2(achievement)
     modapiext.events.onPawnKilled:subscribe(check_fell)
     modApi.events.onPostStartGame:subscribe(reset_falling)
+    modApi.events.onIslandLeft:subscribe(reset_falling)
 
     achievement.objective = 10
 end
