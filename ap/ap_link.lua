@@ -60,6 +60,7 @@ function module.handle_bonus(item_name)
             changed = true
         elseif item_name == "DeathLink" then
             if Game ~= nil then
+                module.queue.dying = true
                 randomizer_helper.memedit.set_power(0)
             end
         end
