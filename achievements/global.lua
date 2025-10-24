@@ -38,6 +38,17 @@ function module.add_achievements()
         "Squad_Cataclysm",
     }
 
+    local achievement_data = {}
+    for line in io.lines(module.mod.scriptPath .. "data/ItB-AP-AchievementTextUpdate.csv") do
+        local fields = {}
+        for value in line:gmatch("[^,]+") do
+            fields[#fields + 1] = value
+        end
+        if fields[4] and fields[4] ~= "" then
+            achievement_data[fields[2]] = fields[4]
+        end
+    end
+
     local image_prefix = "img/achievements/"
     for squad_index, squad_name in ipairs(squad_names) do
         if squad_name == "" then
@@ -45,7 +56,11 @@ function module.add_achievements()
         else
             for i = 1, 3, 1 do
                 local name = GetVanillaText("Ach_" .. squad_name .. "_" .. i .. "_Title")
-                local tooltip = GetVanillaText("Ach_" .. squad_name .. "_" .. i .. "_Text")
+                local tooltip = achievement_data[name]
+                if tooltip == nil then
+                    tooltip = GetVanillaText("Ach_" .. squad_name .. "_" .. i .. "_Text")
+                end
+
                 local progress_key = "Ach_" .. squad_name .. "_" .. i .. "_Progress"
                 local progress = GetVanillaText(progress_key)
                 if progress ~= progress_key then
