@@ -9,7 +9,7 @@ local function reset_grid_appliance()
     randomizer_helper.memedit.set_base_def((module.ap_link.unlocked_items["3 Starting Grid Defense"] or 0) * 3)
     randomizer_helper.memedit.set_power((module.ap_link.unlocked_items["2 Starting Grid Power"] or 0) * 2 +
         (module.ap_link.unlocked_items["1 Starting Grid Power"] or 0) + 1)
-    randomizer_helper.memedit.set_cores(module.ap_link.unlocked_items["1 Starting Core"] or 0)
+    randomizer_helper.memedit.set_cores(module.ap_link.unlocked_items["1 Starting Power Core"] or 0)
     module.ap_link.handle_bonus("New Game")
 end
 
